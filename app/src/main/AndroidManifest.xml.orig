@@ -24,9 +24,14 @@
             </intent-filter>
         </activity>
 
+<<<<<<< HEAD
         <meta-data android:name="com.google.android.maps.v2.API_KEY"
-            android:value=""/>
+            android:value="AIzaSyDwWDCRvna2lS-M4TDS_5jpPS7LuPqW8kI"/>
 
     </application>
+=======
+    <meta-data android:name="com.google.android.maps.v2.API_KEY"
+    android:value=""/>
+>>>>>>> 8e397a968b4ba44401402d56c4fcda6d1d839720
 
 </manifest>
