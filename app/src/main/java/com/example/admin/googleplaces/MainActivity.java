@@ -1,10 +1,14 @@
 package com.example.admin.googleplaces;
 
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -13,26 +17,43 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.w3c.dom.Text;
 
-public class MainActivity extends ActionBarActivity {
+import com.example.admin.googleplaces.managers.WebApiManager;
+
+
+public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapClickListener {
 
     private GoogleMap map_; // Might be null if Google Play services APK is not available.
-    private static final LatLng SQUARE = new LatLng(47.208712, 38.936523);
-    private static final LatLng SQUARE_1 = new LatLng(47.208467, 38.936180);
-    private static final LatLng SQUARE_2 = new LatLng(47.209021, 38.934740);
-    private static final LatLng SQUARE_3 = new LatLng(47.209686, 38.935155);
-    private static final LatLng SQUARE_4 = new LatLng(47.209686, 38.935155);
-
-    private static final LatLng FAINA = new LatLng(47.210497, 38.933804);
-    private static final LatLng FAINA_1 = new LatLng(47.211109, 38.932806);
-
+    private TextView text_;
+    private String TAG = MainActivity.class.getName();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        text_ = (TextView) findViewById(R.id.locinfo);
         setUpMapIfNeeded();
+
+        // Handle user's click on the map
+        map_.setOnMapClickListener(this);
+    }
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+        String point = latLng.toString();
+
+        // Show info about selected point
+        text_.setText(point);
+        map_.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+        /////////
+
+        String location = Utily.getStringLocation(latLng);
+        WebApiManager manager = new WebApiManager();
+        String key = getApiKey();
+        String result = manager.getPlaceInfo(location, key);
+
     }
 
     @Override
@@ -51,19 +72,8 @@ public class MainActivity extends ActionBarActivity {
             // Check if we were successful in obtaining the map.
             if (map_ != null) {
                 setUpMap();
-                addLines();
             }
         }
-    }
-
-    private void addLines() {
-
-        map_.addPolyline((new PolylineOptions())
-                .add(SQUARE, SQUARE_1, SQUARE_2,SQUARE_3,SQUARE_4,FAINA,FAINA_1).width(5).color(Color.BLUE)
-                .geodesic(true));
-        // move camera to zoom on map
-        map_.moveCamera(CameraUpdateFactory.newLatLngZoom(SQUARE,
-                13));
     }
 
     private void setUpMap() {
@@ -83,5 +93,19 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public String getApiKey() {
+        String placesApiKey = "";
+        try {
+            ApplicationInfo info = getPackageManager().getApplicationInfo(this.getPackageName(), PackageManager.GET_META_DATA);
+            Bundle bundle = info.metaData;
+            placesApiKey = bundle.getString("com.google.android.maps.v2.API_KEY");
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(TAG, "Failed to load meta-data, NameNotFound: " + e.getMessage());
+        } catch (NullPointerException e) {
+            Log.e(TAG, "Failed to load meta-data, NullPointer: " + e.getMessage());
+        }
+        return placesApiKey;
     }
 }
