@@ -2,6 +2,8 @@ package com.example.admin.googleplaces;
 
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -10,9 +12,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -77,7 +82,14 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapCl
     }
 
     private void setUpMap() {
-        map_.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.mipmap.chehov);
+       // map_.addMarker(new MarkerOptions().position(new LatLng(47.2092003, 38.9334364)).title("Marker").icon(icon));
+        map_.addMarker(new MarkerOptions().position(new LatLng(47.2092003, 38.9334364)).title("Marker"));
+
+        CameraUpdate center= CameraUpdateFactory.newLatLng(new LatLng(47.2092003, 38.9334364));
+        CameraUpdate zoom = CameraUpdateFactory.zoomTo(14);
+        map_.moveCamera(center);
+        map_.animateCamera(zoom);
     }
 
     @Override
