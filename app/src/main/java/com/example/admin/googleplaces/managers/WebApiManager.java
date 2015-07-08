@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.admin.googleplaces.MainActivity;
-import com.example.admin.googleplaces.data.PlaceDetails;
+import com.example.admin.googleplaces.data.NearbyPlaceDetails;
 import com.example.admin.googleplaces.requests.FetchPhotoRequest;
 import com.example.admin.googleplaces.requests.FetchPlaceSearchRequest;
 
@@ -56,7 +56,7 @@ public class WebApiManager {
         protected void onPostExecute(String result) {
             try {
                 if (result != null) {
-                    List<PlaceDetails> places = FetchPlaceSearchRequest.parseSearchPlacesResponse(result);
+                    List<NearbyPlaceDetails> places = FetchPlaceSearchRequest.parseSearchPlacesResponse(result);
                     List<String> photoRefs = FetchPlaceSearchRequest.getPhotoRefsFromAllPlaces(places);
 
                     if ((photoRefs != null) && (photoRefs.size() != 0)) {

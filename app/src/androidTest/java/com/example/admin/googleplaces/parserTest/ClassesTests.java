@@ -3,7 +3,7 @@ package com.example.admin.googleplaces.parserTest;
 import android.test.AndroidTestCase;
 
 import com.example.admin.googleplaces.data.Photo;
-import com.example.admin.googleplaces.data.PlaceDetails;
+import com.example.admin.googleplaces.data.NearbyPlaceDetails;
 import com.example.admin.googleplaces.requests.FetchPlaceSearchRequest;
 
 import java.net.URL;
@@ -43,18 +43,18 @@ public class ClassesTests extends AndroidTestCase {
         types.add(Constants.POINT_OF_INTEREST_TYPE);
         types.add(Constants.ESTABLISHMENT);
 
-        PlaceDetails placeDetails = new PlaceDetails(Constants.ID, Constants.PLACE_ID, Constants.NAME, iconUrl, photos, types, Constants.RATING);
+        NearbyPlaceDetails nearbyPlaceDetails = new NearbyPlaceDetails(Constants.ID, Constants.PLACE_ID, Constants.NAME, iconUrl, photos, types, Constants.RATING);
 
-        assertEquals(Constants.ID, placeDetails.getId());
-        assertEquals(Constants.PLACE_ID, placeDetails.getPlaceId());
-        assertEquals(Constants.NAME, placeDetails.getName());
-        assertEquals(iconUrl, placeDetails.getIconUrl());
-        assertEquals(photos.get(0), placeDetails.getPhotos().get(0));
+        assertEquals(Constants.ID, nearbyPlaceDetails.getId());
+        assertEquals(Constants.PLACE_ID, nearbyPlaceDetails.getPlaceId());
+        assertEquals(Constants.NAME, nearbyPlaceDetails.getName());
+        assertEquals(iconUrl, nearbyPlaceDetails.getIconUrl());
+        assertEquals(photos.get(0), nearbyPlaceDetails.getPhotos().get(0));
         // Check all 3 types
-        assertEquals(types.get(0), placeDetails.getTypes().get(0));
-        assertEquals(types.get(1), placeDetails.getTypes().get(1));
-        assertEquals(types.get(2), placeDetails.getTypes().get(2));
+        assertEquals(types.get(0), nearbyPlaceDetails.getTypes().get(0));
+        assertEquals(types.get(1), nearbyPlaceDetails.getTypes().get(1));
+        assertEquals(types.get(2), nearbyPlaceDetails.getTypes().get(2));
         // Check rating
-        assertEquals(Constants.RATING, placeDetails.getRating());
+        assertEquals(Constants.RATING, nearbyPlaceDetails.getRating());
     }
 }

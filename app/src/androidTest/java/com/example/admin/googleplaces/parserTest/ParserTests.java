@@ -3,7 +3,7 @@ package com.example.admin.googleplaces.parserTest;
 import android.test.AndroidTestCase;
 
 import com.example.admin.googleplaces.data.Photo;
-import com.example.admin.googleplaces.data.PlaceDetails;
+import com.example.admin.googleplaces.data.NearbyPlaceDetails;
 import com.example.admin.googleplaces.requests.FetchPlaceSearchRequest;
 
 import org.json.JSONArray;
@@ -51,9 +51,9 @@ public class ParserTests extends AndroidTestCase {
     }
 
     /**
-     * Test extraction of PlaceDetails object
+     * Test extraction of NearbyPlaceDetails object
      *
-     * @param placeDetailsJsonObject JSONObject which represents the PlaceDetails object
+     * @param placeDetailsJsonObject JSONObject which represents the NearbyPlaceDetails object
      * @throws JSONException
      */
     public void testGetPlaceDetails(JSONObject placeDetailsJsonObject) throws JSONException {
@@ -65,24 +65,24 @@ public class ParserTests extends AndroidTestCase {
         JSONArray types = placeDetailsJsonObject.getJSONArray(Constants.TYPES_KEY);
         List<String> typeList = FetchPlaceSearchRequest.getTypes(types);
 
-        // Try get placeDetails object from JSON response
-        PlaceDetails placeDetails = FetchPlaceSearchRequest.getPlaceDetails(placeDetailsJsonObject);
+        // Try get NearbyPlaceDetails object from JSON response
+        NearbyPlaceDetails nearbyPlaceDetails = FetchPlaceSearchRequest.getPlaceDetails(placeDetailsJsonObject);
 
-        assertEquals(Constants.ID, placeDetails.getId());
-        assertEquals(Constants.PLACE_ID, placeDetails.getPlaceId());
-        assertEquals(Constants.NAME, placeDetails.getName());
-        assertEquals(iconUrl_, placeDetails.getIconUrl());
+        assertEquals(Constants.ID, nearbyPlaceDetails.getId());
+        assertEquals(Constants.PLACE_ID, nearbyPlaceDetails.getPlaceId());
+        assertEquals(Constants.NAME, nearbyPlaceDetails.getName());
+        assertEquals(iconUrl_, nearbyPlaceDetails.getIconUrl());
 
         // Check extracted Photo object
-        comparePhotosObjects(extractedPhoto, placeDetails.getPhotos().get(0));
+        comparePhotosObjects(extractedPhoto, nearbyPlaceDetails.getPhotos().get(0));
 
         // Check all 3 types
-        assertEquals(typeList.get(0), placeDetails.getTypes().get(0));
-        assertEquals(typeList.get(1), placeDetails.getTypes().get(1));
-        assertEquals(typeList.get(2), placeDetails.getTypes().get(2));
+        assertEquals(typeList.get(0), nearbyPlaceDetails.getTypes().get(0));
+        assertEquals(typeList.get(1), nearbyPlaceDetails.getTypes().get(1));
+        assertEquals(typeList.get(2), nearbyPlaceDetails.getTypes().get(2));
 
         // Check rating
-        assertEquals(Constants.RATING, placeDetails.getRating());
+        assertEquals(Constants.RATING, nearbyPlaceDetails.getRating());
     }
 
     /**

@@ -38,7 +38,7 @@ public class Constants {
     public static List<String> HTML_ATTRS = Arrays.asList("<a href=\"https://www.google.com/maps/views/profile/106283553457831154892\">Михаил Бадретдинов</a>");
     //endregion
 
-    //region Values for PlaceDetails object
+    //region Values for NearbyPlaceDetails object
     public static final String ID = "ebd527cf2c50d7a2f18898f1551c444db052445b";
     public static final String PLACE_ID = "ChIJoW6k8eBX4UARPp4F58iGoFg";
     public static final String NAME = "Домик Чехова";

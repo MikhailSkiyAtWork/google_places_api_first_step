@@ -4,7 +4,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.example.admin.googleplaces.data.Photo;
-import com.example.admin.googleplaces.data.PlaceDetails;
+import com.example.admin.googleplaces.data.NearbyPlaceDetails;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,6 +39,7 @@ public class FetchPlaceSearchRequest {
 
     //region Constants for working with JSON
     // There are the names of the JSON objects that need to be extracted
+    //TODO do as static final not final static
     final static String STATUS = "status";
 
     final static String RESULTS_ARRAY_KEY = "results";
@@ -143,33 +144,33 @@ public class FetchPlaceSearchRequest {
      *
      * @param jsonResponse the string returned from server
      */
-    public static List<PlaceDetails> parseSearchPlacesResponse(String jsonResponse)
+    public static List<NearbyPlaceDetails> parseSearchPlacesResponse(String jsonResponse)
             throws JSONException {
 
-        JSONObject placeDetailsJson = new JSONObject(jsonResponse);
-        JSONArray results = placeDetailsJson.getJSONArray(RESULTS_ARRAY_KEY);
+        JSONObject nearbyPlaceDetailsJson = new JSONObject(jsonResponse);
+        JSONArray results = nearbyPlaceDetailsJson.getJSONArray(RESULTS_ARRAY_KEY);
 
         // Get the number of all places
         int placesCount = results.length();
 
-        List<PlaceDetails> placeDetailsList = new ArrayList<PlaceDetails>();
+        List<NearbyPlaceDetails> nearbyPlaceDetailsList = new ArrayList<NearbyPlaceDetails>();
 
         for (int i = 0; i < placesCount; i++) {
             JSONObject placeDetailsJsonObject = results.getJSONObject(i);
-            PlaceDetails placeDetails = getPlaceDetails(placeDetailsJsonObject);
-            placeDetailsList.add(placeDetails);
+            NearbyPlaceDetails nearbyPlaceDetails = getPlaceDetails(placeDetailsJsonObject);
+            nearbyPlaceDetailsList.add(nearbyPlaceDetails);
         }
-        return placeDetailsList;
+        return nearbyPlaceDetailsList;
     }
 
     /**
      * Extracts the placeDetails object from JSONObject
      *
      * @param placeDetailsJSONObject JSONObject which contains info about place details
-     * @return PlaceDetails object
+     *
      * @throws JSONException
      */
-    public static PlaceDetails getPlaceDetails(JSONObject placeDetailsJSONObject) throws JSONException {
+    public static NearbyPlaceDetails getPlaceDetails(JSONObject placeDetailsJSONObject) throws JSONException {
         // Retrieve the fields from JSONObject
         String iconLink = placeDetailsJSONObject.getString(ICON_KEY);
         URL iconUrl = convertIconLinkToUrl(iconLink);
@@ -204,9 +205,9 @@ public class FetchPlaceSearchRequest {
             }
         }
 
-        PlaceDetails placeDetails = new PlaceDetails(id, placeId, name, iconUrl, extractedPhotoList, types, rating);
+        NearbyPlaceDetails nearbyPlaceDetails = new NearbyPlaceDetails(id, placeId, name, iconUrl, extractedPhotoList, types, rating);
 
-        return placeDetails;
+        return nearbyPlaceDetails;
     }
 
     public static List<String> getTypes(JSONArray typesArray) throws JSONException {
@@ -238,7 +239,7 @@ public class FetchPlaceSearchRequest {
         return extractedPhoto;
     }
 
-    public static List<String> getPhotoRefsFromAllPlaces(List<PlaceDetails> places){
+    public static List<String> getPhotoRefsFromAllPlaces(List<NearbyPlaceDetails> places){
         // add check size of places
         if (places.size()!=0) {
             List<String> allPhotoRefs = new ArrayList<String>();
@@ -254,7 +255,7 @@ public class FetchPlaceSearchRequest {
         } else return null;
     }
 
-    public static List<String> getPhotoRefsByPlace(PlaceDetails place) {
+    public static List<String> getPhotoRefsByPlace(NearbyPlaceDetails place) {
         List<String> photoRefs = new ArrayList<String>();
         List<Photo> photos = place.getPhotos();
         if (photos.size()!= 0) {
