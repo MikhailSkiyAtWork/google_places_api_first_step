@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -31,6 +32,7 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapCl
 
     private GoogleMap map_; // Might be null if Google Play services APK is not available.
     private TextView text_;
+    public static ImageView imageView;
     private String TAG = MainActivity.class.getName();
 
 
@@ -39,6 +41,7 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         text_ = (TextView) findViewById(R.id.locinfo);
+        imageView = (ImageView) findViewById(R.id.cover_image_view);
         setUpMapIfNeeded();
 
         // Handle user's click on the map
@@ -83,10 +86,10 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapCl
 
     private void setUpMap() {
         BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.mipmap.chehov);
-       // map_.addMarker(new MarkerOptions().position(new LatLng(47.2092003, 38.9334364)).title("Marker").icon(icon));
+        // map_.addMarker(new MarkerOptions().position(new LatLng(47.2092003, 38.9334364)).title("Marker").icon(icon));
         map_.addMarker(new MarkerOptions().position(new LatLng(47.2092003, 38.9334364)).title("Marker"));
 
-        CameraUpdate center= CameraUpdateFactory.newLatLng(new LatLng(47.2092003, 38.9334364));
+        CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(47.2092003, 38.9334364));
         CameraUpdate zoom = CameraUpdateFactory.zoomTo(14);
         map_.moveCamera(center);
         map_.animateCamera(zoom);

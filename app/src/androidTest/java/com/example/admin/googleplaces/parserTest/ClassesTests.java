@@ -4,7 +4,7 @@ import android.test.AndroidTestCase;
 
 import com.example.admin.googleplaces.data.Photo;
 import com.example.admin.googleplaces.data.PlaceDetails;
-import com.example.admin.googleplaces.requests.FetchPlaceDeatilsRequest;
+import com.example.admin.googleplaces.requests.FetchPlaceSearchRequest;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class ClassesTests extends AndroidTestCase {
 
     public void testCreatePlaceDetails() {
         // Create Url from icon link
-        URL iconUrl = FetchPlaceDeatilsRequest.getIconUrl(Constants.ICON_LINK);
+        URL iconUrl = FetchPlaceSearchRequest.convertIconLinkToUrl(Constants.ICON_LINK);
         Photo testPhoto = new Photo(Constants.HEIGHT, Constants.WIDTH, Constants.PHOTO_REFS, Constants.HTML_ATTRS);
         photos.add(testPhoto);
 

@@ -1,12 +1,10 @@
 package com.example.admin.googleplaces.requests;
 
-import android.content.pm.ApplicationInfo;
 import android.net.Uri;
 import android.util.Log;
 
 import com.example.admin.googleplaces.data.Photo;
 import com.example.admin.googleplaces.data.PlaceDetails;
-import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,18 +22,18 @@ import java.util.List;
 /**
  * Created by Mikhail Valuyskiy on 06.07.2015.
  */
-public class FetchPlaceDeatilsRequest {
+public class FetchPlaceSearchRequest {
 
-    //region Constanst for building query (Keys)
-    private static final String PLACE_DETAILS_BASE_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?";
-    private static final String LOCATION = "location";
-    private static final String RADIUS = "radius";
-    private static final String SENSOR = "sensor";
-    private static final String KEY = "key";
+    //region Keys for building query
+    private static final String BASE_PLACE_SEARCH_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?";
+    private static final String LOCATION_KEY = "location";
+    private static final String RADIUS_KEY = "radius";
+    private static final String SENSOR_KEY = "sensor";
+    private static final String GOOGLE_PLACES_API_KEY = "key";
     //endregion
 
-    //region Constants for building query (Values)
-    private static int RADIUS_VALUE = 500;
+    //region Values for building query
+    private static int RADIUS_VALUE = 50;
     private static boolean SENSOR_VALUE = false;
     //endregion
 
@@ -43,27 +41,27 @@ public class FetchPlaceDeatilsRequest {
     // There are the names of the JSON objects that need to be extracted
     final static String STATUS = "status";
 
-    final static String RESULTS_ARRAY = "results";
-    final static String ICON = "icon";
-    final static String ID = "id";
-    final static String NAME = "name";
+    final static String RESULTS_ARRAY_KEY = "results";
+    final static String ICON_KEY = "icon";
+    final static String ID_KEY = "id";
+    final static String NAME_KEY = "name";
 
     // Items for extracting photo attrs
-    final static String PHOTOS_ARRAY = "photos";
-    final static String HEIGHT = "height";
-    final static String WIDTH = "width";
-    final static String HTML_ATTRIBUTIONS = "html_attributions";
-    final static String PHOTO_REFERENCE = "photo_reference";
+    final static String PHOTOS_ARRAY_KEY = "photos";
+    final static String HEIGHT_KEY = "height";
+    final static String WIDTH_KEY = "width";
+    final static String HTML_ATTRIBUTIONS_KEY = "html_attributions";
+    final static String PHOTO_REFERENCE_KEY = "photo_reference";
 
-    final static String TYPES = "types";
-    final static String PLACE_ID = "place_id";
-    final static String RATING = "rating";
+    final static String TYPES_KEY = "types";
+    final static String PLACE_ID_KEY = "place_id";
+    final static String RATING_KEY = "rating";
     //endregion
 
-    private static final String LOG_TAG = FetchPlaceDeatilsRequest.class.getSimpleName();
+    private static final String LOG_TAG = FetchPlaceSearchRequest.class.getSimpleName();
 
     /**
-     * Creates query for search request by LatLng and API KEY
+     * Creates query for search request by LatLng and Google Places API KEY
      *
      * @param point is LatLng objects, that represents latitude and longitude of chosen place
      * @param key   is a Google Places Api Key, in general it is storing at mainifest.xml file
@@ -72,11 +70,11 @@ public class FetchPlaceDeatilsRequest {
     public static URL getQuery(String point, String key) {
         URL url = null;
         try {
-            Uri builtUri = Uri.parse(PLACE_DETAILS_BASE_URL).buildUpon()
-                    .appendQueryParameter(LOCATION, point)
-                    .appendQueryParameter(RADIUS, Integer.toString(RADIUS_VALUE))
-                    .appendQueryParameter(SENSOR, Boolean.toString(SENSOR_VALUE))
-                    .appendQueryParameter(KEY, key)
+            Uri builtUri = Uri.parse(BASE_PLACE_SEARCH_URL).buildUpon()
+                    .appendQueryParameter(LOCATION_KEY, point)
+                    .appendQueryParameter(RADIUS_KEY, Integer.toString(RADIUS_VALUE))
+                    .appendQueryParameter(SENSOR_KEY, Boolean.toString(SENSOR_VALUE))
+                    .appendQueryParameter(GOOGLE_PLACES_API_KEY, key)
                     .build();
 
             url = new URL(builtUri.toString());
@@ -145,11 +143,11 @@ public class FetchPlaceDeatilsRequest {
      *
      * @param jsonResponse the string returned from server
      */
-    public static List<PlaceDetails> parseResponse(String jsonResponse)
+    public static List<PlaceDetails> parseSearchPlacesResponse(String jsonResponse)
             throws JSONException {
 
         JSONObject placeDetailsJson = new JSONObject(jsonResponse);
-        JSONArray results = placeDetailsJson.getJSONArray(RESULTS_ARRAY);
+        JSONArray results = placeDetailsJson.getJSONArray(RESULTS_ARRAY_KEY);
 
         // Get the number of all places
         int placesCount = results.length();
@@ -173,30 +171,39 @@ public class FetchPlaceDeatilsRequest {
      */
     public static PlaceDetails getPlaceDetails(JSONObject placeDetailsJSONObject) throws JSONException {
         // Retrieve the fields from JSONObject
-        String iconLink = placeDetailsJSONObject.getString(ICON);
-        URL iconUrl = getIconUrl(iconLink);
+        String iconLink = placeDetailsJSONObject.getString(ICON_KEY);
+        URL iconUrl = convertIconLinkToUrl(iconLink);
 
-        String id = placeDetailsJSONObject.getString(ID);
-        String name = placeDetailsJSONObject.getString(NAME);
-        double rating = placeDetailsJSONObject.getDouble(RATING);
-        String placeId = placeDetailsJSONObject.getString(PLACE_ID);
+        String id = placeDetailsJSONObject.getString(ID_KEY);
+        String name = placeDetailsJSONObject.getString(NAME_KEY);
+
+        // Checks that this value exist
+        double rating = 0;
+        if (placeDetailsJSONObject.has(RATING_KEY)) {
+            rating = placeDetailsJSONObject.getDouble(RATING_KEY);
+        }
+
+        String placeId = placeDetailsJSONObject.getString(PLACE_ID_KEY);
         // List for keeping types of place
         List<String> types = new ArrayList<String>();
 
         // Get set of types
-        JSONArray typesArray = placeDetailsJSONObject.getJSONArray(TYPES);
+        JSONArray typesArray = placeDetailsJSONObject.getJSONArray(TYPES_KEY);
         types = getTypes(typesArray);
 
         // List which contains all extracted photos if there are exists
         List<Photo> extractedPhotoList = new ArrayList<Photo>();
 
         // Get photos
-        JSONArray photosArray = placeDetailsJSONObject.getJSONArray(PHOTOS_ARRAY);
-        for (int k = 0; k < photosArray.length(); k++) {
-            JSONObject photo = photosArray.getJSONObject(k);
-            Photo extractedPhoto = getPlacePhoto(photo);
-            extractedPhotoList.add(extractedPhoto);
+        if (placeDetailsJSONObject.has(PHOTOS_ARRAY_KEY)) {
+            JSONArray photosArray = placeDetailsJSONObject.getJSONArray(PHOTOS_ARRAY_KEY);
+            for (int k = 0; k < photosArray.length(); k++) {
+                JSONObject photo = photosArray.getJSONObject(k);
+                Photo extractedPhoto = getPlacePhoto(photo);
+                extractedPhotoList.add(extractedPhoto);
+            }
         }
+
         PlaceDetails placeDetails = new PlaceDetails(id, placeId, name, iconUrl, extractedPhotoList, types, rating);
 
         return placeDetails;
@@ -214,18 +221,14 @@ public class FetchPlaceDeatilsRequest {
 
     /**
      * Extracts Photo details from JSONObject
-     *
-     * @param photoJsonObject JSONObject
-     * @return Object Photo
-     * @throws JSONException
      */
     public static Photo getPlacePhoto(JSONObject photoJsonObject) throws JSONException {
-        int height = photoJsonObject.getInt(HEIGHT);
-        int width = photoJsonObject.getInt(WIDTH);
-        String photoReference = photoJsonObject.getString(PHOTO_REFERENCE);
+        int height = photoJsonObject.getInt(HEIGHT_KEY);
+        int width = photoJsonObject.getInt(WIDTH_KEY);
+        String photoReference = photoJsonObject.getString(PHOTO_REFERENCE_KEY);
         List<String> htmlAttrs = new ArrayList<String>();
 
-        JSONArray htmlAttrsArray = photoJsonObject.getJSONArray(HTML_ATTRIBUTIONS);
+        JSONArray htmlAttrsArray = photoJsonObject.getJSONArray(HTML_ATTRIBUTIONS_KEY);
         for (int m = 0; m < htmlAttrsArray.length(); m++) {
             String attr = htmlAttrsArray.getString(m);
             htmlAttrs.add(attr);
@@ -235,8 +238,39 @@ public class FetchPlaceDeatilsRequest {
         return extractedPhoto;
     }
 
-    // Convert icon link to the URL object
-    public static URL getIconUrl(String iconLink){
+    public static List<String> getPhotoRefsFromAllPlaces(List<PlaceDetails> places){
+        // add check size of places
+        if (places.size()!=0) {
+            List<String> allPhotoRefs = new ArrayList<String>();
+            List<String> photoRefsFromPlace = new ArrayList<String>();
+
+            for (int i = 0; i < places.size(); i++) {
+                photoRefsFromPlace = getPhotoRefsByPlace(places.get(i));
+                if (photoRefsFromPlace != null) {
+                    allPhotoRefs.addAll(photoRefsFromPlace);
+                }
+            }
+            return allPhotoRefs;
+        } else return null;
+    }
+
+    public static List<String> getPhotoRefsByPlace(PlaceDetails place) {
+        List<String> photoRefs = new ArrayList<String>();
+        List<Photo> photos = place.getPhotos();
+        if (photos.size()!= 0) {
+            for (int i = 0; i < photos.size(); i++) {
+                photoRefs.add(photos.get(i).getPhotoReference());
+            }
+            return photoRefs;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Converts icon link to the URL object
+     */
+    public static URL convertIconLinkToUrl(String iconLink) {
         URL iconUrl;
         try {
             iconUrl = new URL(iconLink);

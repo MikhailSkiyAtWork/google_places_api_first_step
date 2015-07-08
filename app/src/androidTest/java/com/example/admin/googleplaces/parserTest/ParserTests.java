@@ -4,14 +4,13 @@ import android.test.AndroidTestCase;
 
 import com.example.admin.googleplaces.data.Photo;
 import com.example.admin.googleplaces.data.PlaceDetails;
-import com.example.admin.googleplaces.requests.FetchPlaceDeatilsRequest;
+import com.example.admin.googleplaces.requests.FetchPlaceSearchRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,7 +23,7 @@ public class ParserTests extends AndroidTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        iconUrl_ = FetchPlaceDeatilsRequest.getIconUrl(Constants.ICON_LINK);
+        iconUrl_ = FetchPlaceSearchRequest.convertIconLinkToUrl(Constants.ICON_LINK);
         testJsonParser(Constants.JSON_RESPONSE);
     }
 
@@ -60,14 +59,14 @@ public class ParserTests extends AndroidTestCase {
     public void testGetPlaceDetails(JSONObject placeDetailsJsonObject) throws JSONException {
         // Get the photos for testing
         JSONArray photos = placeDetailsJsonObject.getJSONArray(Constants.PHOTOS_ARRAY_KEY);
-        Photo extractedPhoto = FetchPlaceDeatilsRequest.getPlacePhoto(photos.getJSONObject(0));
+        Photo extractedPhoto = FetchPlaceSearchRequest.getPlacePhoto(photos.getJSONObject(0));
 
         // Get the types for testing
         JSONArray types = placeDetailsJsonObject.getJSONArray(Constants.TYPES_KEY);
-        List<String> typeList = FetchPlaceDeatilsRequest.getTypes(types);
+        List<String> typeList = FetchPlaceSearchRequest.getTypes(types);
 
         // Try get placeDetails object from JSON response
-        PlaceDetails placeDetails = FetchPlaceDeatilsRequest.getPlaceDetails(placeDetailsJsonObject);
+        PlaceDetails placeDetails = FetchPlaceSearchRequest.getPlaceDetails(placeDetailsJsonObject);
 
         assertEquals(Constants.ID, placeDetails.getId());
         assertEquals(Constants.PLACE_ID, placeDetails.getPlaceId());
@@ -103,7 +102,7 @@ public class ParserTests extends AndroidTestCase {
      * @throws JSONException
      */
     public void testGetPlacePhotoMethod(JSONObject photoJsonObject) throws JSONException {
-        Photo extractedPhoto = FetchPlaceDeatilsRequest.getPlacePhoto(photoJsonObject);
+        Photo extractedPhoto = FetchPlaceSearchRequest.getPlacePhoto(photoJsonObject);
         assertEquals(Constants.HEIGHT, extractedPhoto.getHeight());
         assertEquals(Constants.WIDTH, extractedPhoto.getWidth());
         assertEquals(Constants.PHOTO_REFS, extractedPhoto.getPhotoReference());
@@ -117,7 +116,7 @@ public class ParserTests extends AndroidTestCase {
      * @throws JSONException
      */
     public void testGetTypesMethod(JSONArray types) throws JSONException {
-        List<String> typesList = FetchPlaceDeatilsRequest.getTypes(types);
+        List<String> typesList = FetchPlaceSearchRequest.getTypes(types);
         assertEquals(typesList.get(0), Constants.MUSEUM_TYPE);
         assertEquals(typesList.get(1), Constants.POINT_OF_INTEREST_TYPE);
         assertEquals(typesList.get(2), Constants.ESTABLISHMENT);
