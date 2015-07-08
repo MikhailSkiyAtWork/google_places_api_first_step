@@ -23,7 +23,7 @@ public class PlaceDetails {
 
     //region Constructors
 
-    public PlaceDetails(String id,String placeId_, String name_, URL iconUrl_, List<Photo> photos_, List<String> types_, double rating_) {
+    public PlaceDetails(String id, String placeId_, String name_, URL iconUrl_, List<Photo> photos_, List<String> types_, double rating_) {
         this.id_ = id;
         this.placeId_ = placeId_;
         this.name_ = name_;

@@ -53,7 +53,6 @@ public class WebApiManager {
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
-
         }
     }
 }

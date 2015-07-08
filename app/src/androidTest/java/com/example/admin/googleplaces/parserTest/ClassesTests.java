@@ -1,12 +1,13 @@
 package com.example.admin.googleplaces.parserTest;
 
-import android.annotation.SuppressLint;
 import android.test.AndroidTestCase;
 
 import com.example.admin.googleplaces.data.Photo;
+import com.example.admin.googleplaces.data.PlaceDetails;
+import com.example.admin.googleplaces.requests.FetchPlaceDeatilsRequest;
 
-import java.util.ArrayDeque;
-import java.util.Arrays;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,22 +15,46 @@ import java.util.List;
  */
 public class ClassesTests extends AndroidTestCase {
 
-    // Dummy data for test
-    private static final int HEIGHT = 3456;
-    private static final int WIDTH = 5184;
-    private String PHOTO_REFS = "CmRdAAAA1Soy7QuTPuDmSP3EoyuQYmv8U7h458xQ64YqYZE0KLxl-jCsPhRRNdULzyseg4gveQTuAT2R5AYw0HSObw19XUVKpNCTVAwRXiM8ZZC5g-gN3ZiOb6grjwOKTyIThgNPEhDZGV_BmlyKQuRYtr4E6ZSeGhSpiwGHt6gelU9UlolM9DdXJm8fgw";
-    private List<String> HTML_ATTRS = Arrays.asList("<a href=\"https://www.google.com/maps/views/profile/106283553457831154892\">Михаил Бадретдинов</a>");
+    public List<Photo> photos = new ArrayList<Photo>();
+    public List<String> types = new ArrayList<String>();
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        testCreatePhoto();
+        testCreatePlaceDetails();
     }
 
-   public void testCreatePhoto(){
-       Photo testPhoto = new Photo(HEIGHT,WIDTH,PHOTO_REFS,HTML_ATTRS);
-       assertEquals(HEIGHT,testPhoto.getHeight());
-       assertEquals(WIDTH,testPhoto.getWidth());
-       assertEquals(PHOTO_REFS,testPhoto.getPhotoReference());
-       assertEquals(HTML_ATTRS.get(0),testPhoto.getHtmlAttrs().get(0));
-   }
+    public void testCreatePhoto() {
+        Photo testPhoto = new Photo(Constants.HEIGHT, Constants.WIDTH, Constants.PHOTO_REFS, Constants.HTML_ATTRS);
+        assertEquals(Constants.HEIGHT, testPhoto.getHeight());
+        assertEquals(Constants.WIDTH, testPhoto.getWidth());
+        assertEquals(Constants.PHOTO_REFS, testPhoto.getPhotoReference());
+        assertEquals(Constants.HTML_ATTRS.get(0), testPhoto.getHtmlAttrs().get(0));
+    }
+
+    public void testCreatePlaceDetails() {
+        // Create Url from icon link
+        URL iconUrl = FetchPlaceDeatilsRequest.getIconUrl(Constants.ICON_LINK);
+        Photo testPhoto = new Photo(Constants.HEIGHT, Constants.WIDTH, Constants.PHOTO_REFS, Constants.HTML_ATTRS);
+        photos.add(testPhoto);
+
+        types.add(Constants.MUSEUM_TYPE);
+        types.add(Constants.POINT_OF_INTEREST_TYPE);
+        types.add(Constants.ESTABLISHMENT);
+
+        PlaceDetails placeDetails = new PlaceDetails(Constants.ID, Constants.PLACE_ID, Constants.NAME, iconUrl, photos, types, Constants.RATING);
+
+        assertEquals(Constants.ID, placeDetails.getId());
+        assertEquals(Constants.PLACE_ID, placeDetails.getPlaceId());
+        assertEquals(Constants.NAME, placeDetails.getName());
+        assertEquals(iconUrl, placeDetails.getIconUrl());
+        assertEquals(photos.get(0), placeDetails.getPhotos().get(0));
+        // Check all 3 types
+        assertEquals(types.get(0), placeDetails.getTypes().get(0));
+        assertEquals(types.get(1), placeDetails.getTypes().get(1));
+        assertEquals(types.get(2), placeDetails.getTypes().get(2));
+        // Check rating
+        assertEquals(Constants.RATING, placeDetails.getRating());
+    }
 }

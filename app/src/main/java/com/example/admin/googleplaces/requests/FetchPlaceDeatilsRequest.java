@@ -173,16 +173,8 @@ public class FetchPlaceDeatilsRequest {
      */
     public static PlaceDetails getPlaceDetails(JSONObject placeDetailsJSONObject) throws JSONException {
         // Retrieve the fields from JSONObject
-        String icon = placeDetailsJSONObject.getString(ICON);
-        URL iconUrl;
-
-        // Convert icon link to the URL object
-        try {
-            iconUrl = new URL(icon.toString());
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "Error", e);
-            return null;
-        }
+        String iconLink = placeDetailsJSONObject.getString(ICON);
+        URL iconUrl = getIconUrl(iconLink);
 
         String id = placeDetailsJSONObject.getString(ID);
         String name = placeDetailsJSONObject.getString(NAME);
@@ -194,7 +186,6 @@ public class FetchPlaceDeatilsRequest {
         // Get set of types
         JSONArray typesArray = placeDetailsJSONObject.getJSONArray(TYPES);
         types = getTypes(typesArray);
-
 
         // List which contains all extracted photos if there are exists
         List<Photo> extractedPhotoList = new ArrayList<Photo>();
@@ -242,5 +233,17 @@ public class FetchPlaceDeatilsRequest {
 
         Photo extractedPhoto = new Photo(height, width, photoReference, htmlAttrs);
         return extractedPhoto;
+    }
+
+    // Convert icon link to the URL object
+    public static URL getIconUrl(String iconLink){
+        URL iconUrl;
+        try {
+            iconUrl = new URL(iconLink);
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Error", e);
+            return null;
+        }
+        return iconUrl;
     }
 }
