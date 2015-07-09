@@ -8,11 +8,12 @@ package com.example.admin.googleplaces.requests;
 import android.net.Uri;
 import android.util.Log;
 
-import com.example.admin.googleplaces.data.ExplicitPlaceDetails;
-import com.example.admin.googleplaces.JsonHelper;
-import com.example.admin.googleplaces.data.RequestParams;
+import com.example.admin.googleplaces.data.Photo;
+import com.example.admin.googleplaces.data.PlaceDetails;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,11 +21,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Contain fields and methods which are necessary for sending Place Details request
  */
-public class FetchPlaceDetailsRequest extends Request {
+public class FetchPlaceDetailsRequest {
 
     //region Keys for Place Details building query
     private static final String BASE_PLACE_DETAILS_URL = "https://maps.googleapis.com/maps/api/place/details/json?";
@@ -32,7 +35,11 @@ public class FetchPlaceDetailsRequest extends Request {
     private static final String GOOGLE_PLACES_API_KEY = "key";
     //endregion
 
-
+    //region Constants for parsing JSON
+    static final String RESULT_KEY = "result";
+    static final String NAME_KEY = "name";
+    static final String PHOTOS_KEY = "photos";
+    //endregion
 
     private static final String LOG_TAG = FetchPlaceSearchRequest.class.getSimpleName();
 
@@ -44,12 +51,13 @@ public class FetchPlaceDetailsRequest extends Request {
      * @return URL of Place Details request
      */
 
-    public URL getUrl(RequestParams requestParams) {
+    // TODO buildUrl instead of getQuery
+    public static URL getQuery(String placeId, String key) {
         URL url = null;
         try {
             Uri placeDetailsUri = Uri.parse(BASE_PLACE_DETAILS_URL).buildUpon()
-                    .appendQueryParameter(PLACE_ID_KEY, requestParams.getPlaceId())
-                    .appendQueryParameter(GOOGLE_PLACES_API_KEY, requestParams.getApiKey())
+                    .appendQueryParameter(PLACE_ID_KEY, placeId)
+                    .appendQueryParameter(GOOGLE_PLACES_API_KEY, key)
                     .build();
 
             url = new URL(placeDetailsUri.toString());
@@ -66,7 +74,7 @@ public class FetchPlaceDetailsRequest extends Request {
      * @param placeDetailsUrl special Url that contained the placeId and Google Places API
      * @return string that contains json response from server
      */
-    public  String sendRequest(URL placeDetailsUrl) {
+    public static String sendPlaceDetailsRequest(URL placeDetailsUrl) {
         // TODO sendRequest is a similar like sendSearchRequest
         // TODO So is good idea to create such method as a separate method???
         HttpURLConnection urlConnection = null;
@@ -114,14 +122,25 @@ public class FetchPlaceDetailsRequest extends Request {
         return jsonResult;
     }
 
-    public static ExplicitPlaceDetails parsePlaceDetailsResponse(String jsonResponse) throws JSONException {
-        ExplicitPlaceDetails explicitPlaceDetails = JsonHelper.getPlaceDetailsFromJson(jsonResponse);
-        return explicitPlaceDetails;
+    public static List<PlaceDetails> parsePlaceDetailsResponse(String jsonResponse) throws JSONException {
+
+        JSONObject placeDetails = new JSONObject(jsonResponse);
+        JSONObject result = new JSONObject(RESULT_KEY);
+
+        String name = result.getString(NAME_KEY);
+
+        JSONArray photosArray = result.getJSONArray(PHOTOS_KEY);
+        List<Photo> photos = new ArrayList<Photo>();
+
+        for (int i = 0; i < photosArray.length(); i++) {
+
+            Photo photo = FetchPlaceSearchRequest.getPlacePhoto(photosArray.getJSONObject(i));
+            photos.add(photo);
+        }
+
+
+
     }
-
-
-
-
 
 }
 

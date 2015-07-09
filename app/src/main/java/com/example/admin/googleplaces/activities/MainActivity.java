@@ -2,6 +2,9 @@ package com.example.admin.googleplaces.activities;
 
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +23,9 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+import org.w3c.dom.Text;
 
 import com.example.admin.googleplaces.managers.WebApiManager;
 
@@ -53,10 +59,10 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapCl
         map_.animateCamera(CameraUpdateFactory.newLatLng(latLng));
         /////////
 
-       // ??? String location = Utily.getStringLocation(latLng);
+        String location = Utily.getStringLocation(latLng);
         WebApiManager manager = new WebApiManager();
         String key = getApiKey();
-        String result = manager.getPlaceInfo(latLng, key);
+        String result = manager.getPlaceInfo(location, key);
 
     }
 

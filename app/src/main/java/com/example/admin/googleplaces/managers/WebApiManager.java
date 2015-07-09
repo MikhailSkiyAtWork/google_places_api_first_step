@@ -6,10 +6,8 @@ import android.util.Log;
 
 import com.example.admin.googleplaces.activities.MainActivity;
 import com.example.admin.googleplaces.data.NearbyPlaceDetails;
-import com.example.admin.googleplaces.data.RequestParams;
 import com.example.admin.googleplaces.requests.FetchPhotoRequest;
 import com.example.admin.googleplaces.requests.FetchPlaceSearchRequest;
-import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONException;
 
@@ -26,11 +24,10 @@ public class WebApiManager {
     private String apiKey;
 
 
-    public String getPlaceInfo(LatLng point, String key) {
+    public String getPlaceInfo(String point, String key) {
         if ((point != null) && (key != null)) {
             apiKey = key;
-            RequestParams requestParams = new RequestParams(point,50,key);
-            new WebApiWorker().execute(requestParams);
+            new WebApiWorker().execute(point, key);
             return info_;
         } else {
             Log.e(LOG_TAG, "Invalid input params");
@@ -38,21 +35,20 @@ public class WebApiManager {
         }
     }
 
-    private class WebApiWorker extends AsyncTask<RequestParams, Void, String> {
+    private class WebApiWorker extends AsyncTask<String, Void, String> {
 
         private final String LOG_TAG = WebApiWorker.class.getSimpleName();
 
-        protected String doInBackground(RequestParams... params) {
+        protected String doInBackground(String... params) {
 
             if (params.length == 0) {
                 return null;
             }
 
             // Create search query
-
-            URL url = FetchPlaceSearchRequest.getUrl(params[0]);
+            URL url = FetchPlaceSearchRequest.getQuery(params[0], params[1]);
             // Send request
-            String data = FetchPlaceSearchRequest.sendRequest(url);
+            String data = FetchPlaceSearchRequest.sendSearchRequest(url);
             return data;
         }
 

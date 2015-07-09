@@ -79,6 +79,19 @@ public class FetchPhotoRequest {
 
             photo = BitmapFactory.decodeStream(inputStream);
 
+
+
+//            reader = new BufferedReader(new InputStreamReader(inputStream));
+//            String line;
+//            while ((line = reader.readLine()) != null) {
+//                buffer.append(line + "\n");
+//            }
+//
+//            if (buffer.length() == 0) {
+//                return null;
+//            }
+//            jsonResult = buffer.toString();
+
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error", e);
             return null;
