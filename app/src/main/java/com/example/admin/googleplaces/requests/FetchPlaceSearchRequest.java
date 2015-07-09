@@ -68,6 +68,7 @@ public class FetchPlaceSearchRequest {
      * @param key   is a Google Places Api Key, in general it is storing at mainifest.xml file
      * @return the URL of search request
      */
+    // TODO add radius as arg (such as it will posiible change radius from config)
     public static URL getQuery(String point, String key) {
         URL url = null;
         try {
