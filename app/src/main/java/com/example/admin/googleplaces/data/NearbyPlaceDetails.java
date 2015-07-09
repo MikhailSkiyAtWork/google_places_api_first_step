@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Describes details about the nearby place
  */
-public class NearbyPlaceDetails {
+public class NearbyPlaceDetails extends PlaceDetails {
     private String id_;
     private String placeId_;
     private String name_;

@@ -2,6 +2,7 @@ package com.example.admin.googleplaces.parserTest;
 
 import android.test.AndroidTestCase;
 
+import com.example.admin.googleplaces.Utily;
 import com.example.admin.googleplaces.data.Photo;
 import com.example.admin.googleplaces.data.NearbyPlaceDetails;
 import com.example.admin.googleplaces.requests.FetchPlaceSearchRequest;
@@ -35,7 +36,7 @@ public class ClassesTests extends AndroidTestCase {
 
     public void testCreatePlaceDetails() {
         // Create Url from icon link
-        URL iconUrl = FetchPlaceSearchRequest.convertIconLinkToUrl(Constants.ICON_LINK);
+        URL iconUrl = Utily.convertIconLinkToUrl(Constants.ICON_LINK);
         Photo testPhoto = new Photo(Constants.HEIGHT, Constants.WIDTH, Constants.PHOTO_REFS, Constants.HTML_ATTRS);
         photos.add(testPhoto);
 

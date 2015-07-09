@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.example.admin.googleplaces.data.Photo;
 import com.example.admin.googleplaces.data.NearbyPlaceDetails;
+import com.example.admin.googleplaces.JsonHelper;
+import com.example.admin.googleplaces.data.RequestParams;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,7 +24,7 @@ import java.util.List;
 /**
  * Created by Mikhail Valuyskiy on 06.07.2015.
  */
-public class FetchPlaceSearchRequest {
+public class FetchPlaceSearchRequest extends Request {
 
     //region Keys for building query
     private static final String BASE_PLACE_SEARCH_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?";
@@ -37,27 +39,6 @@ public class FetchPlaceSearchRequest {
     private static boolean SENSOR_VALUE = false;
     //endregion
 
-    //region Constants for working with JSON
-    // There are the names of the JSON objects that need to be extracted
-    //TODO do as static final not final static
-    final static String STATUS = "status";
-
-    final static String RESULTS_ARRAY_KEY = "results";
-    final static String ICON_KEY = "icon";
-    final static String ID_KEY = "id";
-    final static String NAME_KEY = "name";
-
-    // Items for extracting photo attrs
-    final static String PHOTOS_ARRAY_KEY = "photos";
-    final static String HEIGHT_KEY = "height";
-    final static String WIDTH_KEY = "width";
-    final static String HTML_ATTRIBUTIONS_KEY = "html_attributions";
-    final static String PHOTO_REFERENCE_KEY = "photo_reference";
-
-    final static String TYPES_KEY = "types";
-    final static String PLACE_ID_KEY = "place_id";
-    final static String RATING_KEY = "rating";
-    //endregion
 
     private static final String LOG_TAG = FetchPlaceSearchRequest.class.getSimpleName();
 
@@ -69,14 +50,14 @@ public class FetchPlaceSearchRequest {
      * @return the URL of search request
      */
     // TODO add radius as arg (such as it will posiible change radius from config)
-    public static URL getQuery(String point, String key) {
+    // TODO Check requestParams.getPoint() and others not null or empty
+    public URL getUrl(RequestParams requestParams) {
         URL url = null;
         try {
             Uri builtUri = Uri.parse(BASE_PLACE_SEARCH_URL).buildUpon()
-                    .appendQueryParameter(LOCATION_KEY, point)
-                    .appendQueryParameter(RADIUS_KEY, Integer.toString(RADIUS_VALUE))
-                    .appendQueryParameter(SENSOR_KEY, Boolean.toString(SENSOR_VALUE))
-                    .appendQueryParameter(GOOGLE_PLACES_API_KEY, key)
+                    .appendQueryParameter(LOCATION_KEY, requestParams.getPoint())
+                    .appendQueryParameter(RADIUS_KEY, requestParams.getRadius())
+                    .appendQueryParameter(GOOGLE_PLACES_API_KEY, requestParams.getApiKey())
                     .build();
 
             url = new URL(builtUri.toString());
@@ -93,7 +74,7 @@ public class FetchPlaceSearchRequest {
      * @param url the search query
      * @return string that contains json response from server
      */
-    public static String sendSearchRequest(URL url) {
+    public String sendRequest(URL url) {
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
         String jsonResult = null;
@@ -139,110 +120,18 @@ public class FetchPlaceSearchRequest {
         return jsonResult;
     }
 
-
     /**
-     * Parse out JSON-response, returned from server
-     *
-     * @param jsonResponse the string returned from server
+     * Returns All nearby places and some details about such places
      */
-    public static List<NearbyPlaceDetails> parseSearchPlacesResponse(String jsonResponse)
-            throws JSONException {
-
-        JSONObject nearbyPlaceDetailsJson = new JSONObject(jsonResponse);
-        JSONArray results = nearbyPlaceDetailsJson.getJSONArray(RESULTS_ARRAY_KEY);
-
-        // Get the number of all places
-        int placesCount = results.length();
-
-        List<NearbyPlaceDetails> nearbyPlaceDetailsList = new ArrayList<NearbyPlaceDetails>();
-
-        for (int i = 0; i < placesCount; i++) {
-            JSONObject placeDetailsJsonObject = results.getJSONObject(i);
-            NearbyPlaceDetails nearbyPlaceDetails = getPlaceDetails(placeDetailsJsonObject);
-            nearbyPlaceDetailsList.add(nearbyPlaceDetails);
-        }
+    public static List<NearbyPlaceDetails> parseSearchPlacesResponse(String jsonResponse) throws JSONException {
+        List<NearbyPlaceDetails> nearbyPlaceDetailsList = JsonHelper.getAllNearbyPlaces(jsonResponse);
         return nearbyPlaceDetailsList;
     }
 
-    /**
-     * Extracts the placeDetails object from JSONObject
-     *
-     * @param placeDetailsJSONObject JSONObject which contains info about place details
-     *
-     * @throws JSONException
-     */
-    public static NearbyPlaceDetails getPlaceDetails(JSONObject placeDetailsJSONObject) throws JSONException {
-        // Retrieve the fields from JSONObject
-        String iconLink = placeDetailsJSONObject.getString(ICON_KEY);
-        URL iconUrl = convertIconLinkToUrl(iconLink);
 
-        String id = placeDetailsJSONObject.getString(ID_KEY);
-        String name = placeDetailsJSONObject.getString(NAME_KEY);
-
-        // Checks that this value exist
-        double rating = 0;
-        if (placeDetailsJSONObject.has(RATING_KEY)) {
-            rating = placeDetailsJSONObject.getDouble(RATING_KEY);
-        }
-
-        String placeId = placeDetailsJSONObject.getString(PLACE_ID_KEY);
-        // List for keeping types of place
-        List<String> types = new ArrayList<String>();
-
-        // Get set of types
-        JSONArray typesArray = placeDetailsJSONObject.getJSONArray(TYPES_KEY);
-        types = getTypes(typesArray);
-
-        // List which contains all extracted photos if there are exists
-        List<Photo> extractedPhotoList = new ArrayList<Photo>();
-
-        // Get photos
-        if (placeDetailsJSONObject.has(PHOTOS_ARRAY_KEY)) {
-            JSONArray photosArray = placeDetailsJSONObject.getJSONArray(PHOTOS_ARRAY_KEY);
-            for (int k = 0; k < photosArray.length(); k++) {
-                JSONObject photo = photosArray.getJSONObject(k);
-                Photo extractedPhoto = getPlacePhoto(photo);
-                extractedPhotoList.add(extractedPhoto);
-            }
-        }
-
-        NearbyPlaceDetails nearbyPlaceDetails = new NearbyPlaceDetails(id, placeId, name, iconUrl, extractedPhotoList, types, rating);
-
-        return nearbyPlaceDetails;
-    }
-
-    public static List<String> getTypes(JSONArray typesArray) throws JSONException {
-        // List for keeping types of place
-        List<String> types = new ArrayList<String>();
-        for (int j = 0; j < typesArray.length(); j++) {
-            String typeStr = typesArray.getString(j);
-            types.add(typeStr);
-        }
-        return types;
-    }
-
-    /**
-     * Extracts Photo details from JSONObject
-     */
-    public static Photo getPlacePhoto(JSONObject photoJsonObject) throws JSONException {
-        int height = photoJsonObject.getInt(HEIGHT_KEY);
-        int width = photoJsonObject.getInt(WIDTH_KEY);
-        String photoReference = photoJsonObject.getString(PHOTO_REFERENCE_KEY);
-        List<String> htmlAttrs = new ArrayList<String>();
-
-        JSONArray htmlAttrsArray = photoJsonObject.getJSONArray(HTML_ATTRIBUTIONS_KEY);
-        for (int m = 0; m < htmlAttrsArray.length(); m++) {
-            String attr = htmlAttrsArray.getString(m);
-            htmlAttrs.add(attr);
-        }
-
-        Photo extractedPhoto = new Photo(height, width, photoReference, htmlAttrs);
-        return extractedPhoto;
-    }
-
-    public static List<String> getPhotoRefsFromAllPlaces(List<NearbyPlaceDetails> places){
+    public static List<String> getPhotoRefsFromAllPlaces(List<NearbyPlaceDetails> places) {
         // add check size of places
-        if (places.size()!=0) {
+        if (places.size() != 0) {
             List<String> allPhotoRefs = new ArrayList<String>();
             List<String> photoRefsFromPlace = new ArrayList<String>();
 
@@ -259,7 +148,7 @@ public class FetchPlaceSearchRequest {
     public static List<String> getPhotoRefsByPlace(NearbyPlaceDetails place) {
         List<String> photoRefs = new ArrayList<String>();
         List<Photo> photos = place.getPhotos();
-        if (photos.size()!= 0) {
+        if (photos.size() != 0) {
             for (int i = 0; i < photos.size(); i++) {
                 photoRefs.add(photos.get(i).getPhotoReference());
             }
@@ -269,17 +158,5 @@ public class FetchPlaceSearchRequest {
         }
     }
 
-    /**
-     * Converts icon link to the URL object
-     */
-    public static URL convertIconLinkToUrl(String iconLink) {
-        URL iconUrl;
-        try {
-            iconUrl = new URL(iconLink);
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "Error", e);
-            return null;
-        }
-        return iconUrl;
-    }
+
 }

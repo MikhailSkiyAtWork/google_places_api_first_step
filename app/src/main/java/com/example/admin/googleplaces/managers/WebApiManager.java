@@ -4,10 +4,12 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.example.admin.googleplaces.MainActivity;
+import com.example.admin.googleplaces.activities.MainActivity;
 import com.example.admin.googleplaces.data.NearbyPlaceDetails;
+import com.example.admin.googleplaces.data.RequestParams;
 import com.example.admin.googleplaces.requests.FetchPhotoRequest;
 import com.example.admin.googleplaces.requests.FetchPlaceSearchRequest;
+import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONException;
 
@@ -24,10 +26,11 @@ public class WebApiManager {
     private String apiKey;
 
 
-    public String getPlaceInfo(String point, String key) {
+    public String getPlaceInfo(LatLng point, String key) {
         if ((point != null) && (key != null)) {
             apiKey = key;
-            new WebApiWorker().execute(point, key);
+            RequestParams requestParams = new RequestParams(point,50,key);
+            new WebApiWorker().execute(requestParams);
             return info_;
         } else {
             Log.e(LOG_TAG, "Invalid input params");
@@ -35,20 +38,21 @@ public class WebApiManager {
         }
     }
 
-    private class WebApiWorker extends AsyncTask<String, Void, String> {
+    private class WebApiWorker extends AsyncTask<RequestParams, Void, String> {
 
         private final String LOG_TAG = WebApiWorker.class.getSimpleName();
 
-        protected String doInBackground(String... params) {
+        protected String doInBackground(RequestParams... params) {
 
             if (params.length == 0) {
                 return null;
             }
 
             // Create search query
-            URL url = FetchPlaceSearchRequest.getQuery(params[0], params[1]);
+
+            URL url = FetchPlaceSearchRequest.getUrl(params[0]);
             // Send request
-            String data = FetchPlaceSearchRequest.sendSearchRequest(url);
+            String data = FetchPlaceSearchRequest.sendRequest(url);
             return data;
         }
 
