@@ -3,14 +3,12 @@ package com.example.admin.googleplaces.requests;
 import android.net.Uri;
 import android.util.Log;
 
-import com.example.admin.googleplaces.data.Photo;
-import com.example.admin.googleplaces.data.NearbyPlaceDetails;
-import com.example.admin.googleplaces.JsonHelper;
-import com.example.admin.googleplaces.data.RequestParams;
+import com.example.admin.googleplaces.models.Photo;
+import com.example.admin.googleplaces.models.NearbyPlaceDetails;
+import com.example.admin.googleplaces.helpers.JsonHelper;
+import com.example.admin.googleplaces.models.RequestParams;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -31,7 +29,6 @@ public class FetchPlaceSearchRequest extends Request {
     private static final String LOCATION_KEY = "location";
     private static final String RADIUS_KEY = "radius";
     private static final String SENSOR_KEY = "sensor";
-    private static final String GOOGLE_PLACES_API_KEY = "key";
     //endregion
 
     //region Values for building query
@@ -39,8 +36,33 @@ public class FetchPlaceSearchRequest extends Request {
     private static boolean SENSOR_VALUE = false;
     //endregion
 
+    private String response_;
+    private List<NearbyPlaceDetails> places_ = new ArrayList<>();
+    private List<String> photoRefs_ = new ArrayList<>();
+
 
     private static final String LOG_TAG = FetchPlaceSearchRequest.class.getSimpleName();
+
+    public FetchPlaceSearchRequest(RequestParams params) {
+        URL url = getUrl(params);
+        response_ = sendRequest(url);
+
+        // WARNING реквест посылается асинхронно, мы не знаем когда будет ответ, как действовать дальше?
+        try {
+            places_ = FetchPlaceSearchRequest.parseSearchPlacesResponse(response_);
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, e.getMessage());
+        }
+
+        photoRefs_ = FetchPlaceSearchRequest.getPhotoRefsFromAllPlaces(places_);
+    }
+
+    /**
+     * Returns the response from the server as a string
+     */
+    public String getResponse(){
+        return this.response_;
+    }
 
     /**
      * Creates query for search request by LatLng and Google Places API KEY
@@ -128,6 +150,24 @@ public class FetchPlaceSearchRequest extends Request {
         return nearbyPlaceDetailsList;
     }
 
+    /**
+     * Returns all nearby places which have photos
+     */
+    public static List<NearbyPlaceDetails> getPlacesWithPhoto(List<NearbyPlaceDetails> places) {
+        if (places.size() != 0) {
+            List<NearbyPlaceDetails> placesWithPhoto = new ArrayList<NearbyPlaceDetails>();
+            List<String> photoRefsFromPlace = new ArrayList<String>();
+            for (int i = 0; i < places.size(); i++) {
+                photoRefsFromPlace = getPhotoRefsByPlace(places.get(i));
+                if (photoRefsFromPlace.size() > 0) {
+                    placesWithPhoto.add(places.get(i));
+                }
+            }
+            return placesWithPhoto;
+        } else {
+            return null;
+        }
+    }
 
     public static List<String> getPhotoRefsFromAllPlaces(List<NearbyPlaceDetails> places) {
         // add check size of places

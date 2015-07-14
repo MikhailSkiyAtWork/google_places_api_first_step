@@ -4,10 +4,9 @@ package com.example.admin.googleplaces.helpers;
  * Created by Mikhail Valuyskiy on 09.07.2015.
  */
 
-import com.example.admin.googleplaces.Utily;
-import com.example.admin.googleplaces.data.NearbyPlaceDetails;
-import com.example.admin.googleplaces.data.Photo;
-import com.example.admin.googleplaces.data.ExplicitPlaceDetails;
+import com.example.admin.googleplaces.models.NearbyPlaceDetails;
+import com.example.admin.googleplaces.models.Photo;
+import com.example.admin.googleplaces.models.ExplicitPlaceDetails;
 
 import org.json.JSONArray;
 import org.json.JSONException;

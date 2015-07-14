@@ -2,10 +2,9 @@ package com.example.admin.googleplaces.parserTest;
 
 import android.test.AndroidTestCase;
 
-import com.example.admin.googleplaces.Utily;
-import com.example.admin.googleplaces.data.Photo;
-import com.example.admin.googleplaces.data.NearbyPlaceDetails;
-import com.example.admin.googleplaces.requests.FetchPlaceSearchRequest;
+import com.example.admin.googleplaces.helpers.Utily;
+import com.example.admin.googleplaces.models.Photo;
+import com.example.admin.googleplaces.models.NearbyPlaceDetails;
 
 import java.net.URL;
 import java.util.ArrayList;

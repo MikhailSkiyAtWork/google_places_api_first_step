@@ -1,8 +1,5 @@
 package com.example.admin.googleplaces.parserTest;
 
-import com.example.admin.googleplaces.data.Photo;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

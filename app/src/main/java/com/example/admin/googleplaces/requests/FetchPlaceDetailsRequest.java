@@ -8,9 +8,10 @@ package com.example.admin.googleplaces.requests;
 import android.net.Uri;
 import android.util.Log;
 
-import com.example.admin.googleplaces.data.ExplicitPlaceDetails;
-import com.example.admin.googleplaces.JsonHelper;
-import com.example.admin.googleplaces.data.RequestParams;
+import com.example.admin.googleplaces.models.ExplicitPlaceDetails;
+import com.example.admin.googleplaces.helpers.JsonHelper;
+import com.example.admin.googleplaces.models.Photo;
+import com.example.admin.googleplaces.models.RequestParams;
 
 import org.json.JSONException;
 
@@ -20,6 +21,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Contain fields and methods which are necessary for sending Place Details request
@@ -29,10 +32,27 @@ public class FetchPlaceDetailsRequest extends Request {
     //region Keys for Place Details building query
     private static final String BASE_PLACE_DETAILS_URL = "https://maps.googleapis.com/maps/api/place/details/json?";
     private static final String PLACE_ID_KEY = "placeid";
-    private static final String GOOGLE_PLACES_API_KEY = "key";
     //endregion
 
+    private String response_;
+    private ExplicitPlaceDetails details_;
+    private List<Photo> photoRefs = new ArrayList<Photo>();
 
+
+    public FetchPlaceDetailsRequest(RequestParams params){
+        URL url = getUrl(params);
+        response_ = sendRequest(url);
+        try {
+            details_ = parsePlaceDetailsResponse(response_);
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, e.getMessage());
+        }
+        photoRefs = details_.getPhotos();
+    }
+
+    public String getResponse() {
+        return this.response_;
+    }
 
     private static final String LOG_TAG = FetchPlaceSearchRequest.class.getSimpleName();
 

@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.admin.googleplaces.R;
-import com.example.admin.googleplaces.Utily;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -58,6 +57,12 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapCl
         String key = getApiKey();
         String result = manager.getPlaceInfo(latLng, key);
 
+        // TODO SET PREVIEW HERE!!!
+        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.mipmap.chehov);
+        map_.addMarker(new MarkerOptions().position(new LatLng(47.2092003, 38.9334364))
+                .title("Marker")
+                .icon());
+
     }
 
     @Override
@@ -81,9 +86,7 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapCl
     }
 
     private void setUpMap() {
-        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.mipmap.chehov);
-        // map_.addMarker(new MarkerOptions().position(new LatLng(47.2092003, 38.9334364)).title("Marker").icon(icon));
-        map_.addMarker(new MarkerOptions().position(new LatLng(47.2092003, 38.9334364)).title("Marker"));
+
 
         CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(47.2092003, 38.9334364));
         CameraUpdate zoom = CameraUpdateFactory.zoomTo(14);

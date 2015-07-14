@@ -5,8 +5,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.admin.googleplaces.activities.MainActivity;
-import com.example.admin.googleplaces.data.NearbyPlaceDetails;
-import com.example.admin.googleplaces.data.RequestParams;
+import com.example.admin.googleplaces.models.NearbyPlaceDetails;
+import com.example.admin.googleplaces.models.RequestParams;
 import com.example.admin.googleplaces.requests.FetchPhotoRequest;
 import com.example.admin.googleplaces.requests.FetchPlaceSearchRequest;
 import com.google.android.gms.maps.model.LatLng;
@@ -50,9 +50,16 @@ public class WebApiManager {
 
             // Create search query
 
-            URL url = FetchPlaceSearchRequest.getUrl(params[0]);
-            // Send request
-            String data = FetchPlaceSearchRequest.sendRequest(url);
+            FetchPlaceSearchRequest placeSearchRequest = new FetchPlaceSearchRequest(params[0]);
+
+
+//            Request placeSearchRequest = new FetchPlaceSearchRequest(params[0]);
+//            if (placeSearchRequest instanceof Request ) {
+//                FetchPlaceSearchRequest aff=  (FetchPlaceSearchRequest)placeSearchRequest;
+//
+//            }
+
+
             return data;
         }
 
