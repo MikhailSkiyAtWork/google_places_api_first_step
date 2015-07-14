@@ -1,9 +1,10 @@
-package com.example.admin.googleplaces;
+package com.example.admin.googleplaces.helpers;
 
 /**
  * Created by Mikhail Valuyskiy on 09.07.2015.
  */
 
+import com.example.admin.googleplaces.Utily;
 import com.example.admin.googleplaces.data.NearbyPlaceDetails;
 import com.example.admin.googleplaces.data.Photo;
 import com.example.admin.googleplaces.data.ExplicitPlaceDetails;

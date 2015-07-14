@@ -1,11 +1,15 @@
-package com.example.admin.googleplaces.data;
+package com.example.admin.googleplaces.models;
 
-import com.example.admin.googleplaces.requests.Request;
 import com.google.android.gms.maps.model.LatLng;
 
 /**
  * Created by Mikhail Valuyskiy on 09.07.2015.
  */
+
+// For using abstract class in is necessary that all descendants use the same params, but depend on
+// the request the number of params may be different.
+// So I decided to create RequestParams.cs class which has all params and different constructors  and properties.
+// (Take a look) So I have question is it ok to us properties or constructor?
 public class RequestParams {
 
     private static final String COMMA = ",";

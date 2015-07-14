@@ -1,4 +1,4 @@
-package com.example.admin.googleplaces;
+package com.example.admin.googleplaces.helpers;
 
 /**
  * Created by Mikhail Valuyskiy on 06.07.2015.

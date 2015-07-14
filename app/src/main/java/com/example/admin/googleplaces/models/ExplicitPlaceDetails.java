@@ -1,4 +1,4 @@
-package com.example.admin.googleplaces.data;
+package com.example.admin.googleplaces.models;
 
 /**
  * Created by Mikhail Valuyskiy on 08.07.2015.
