@@ -3,13 +3,26 @@ package com.example.admin.googleplaces.requests;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.util.Log;
+
+import com.example.admin.googleplaces.activities.MainActivity;
+import com.example.admin.googleplaces.listeners.AsyncTaskListener;
+import com.example.admin.googleplaces.listeners.PhotoExtractorListener;
+import com.example.admin.googleplaces.managers.PhotoExtractor;
+import com.example.admin.googleplaces.models.NearbyPlaceDetails;
+import com.example.admin.googleplaces.models.RequestParams;
+import com.google.android.gms.maps.model.LatLng;
+
+import org.json.JSONException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.InvalidParameterException;
+import java.util.List;
 
 /**
  * Created by Mikhail Valuyskiy on 06.07.2015.
@@ -25,24 +38,73 @@ public class FetchPhotoRequest {
     //endregion
 
     private static final String LOG_TAG = FetchPlaceSearchRequest.class.getSimpleName();
+    private Bitmap photo_;
+
+    public Bitmap getPhoto(String maxWidth, String maxHeight, String photoReference, String key) {
+        if ((key != null)) {
+
+            RequestParams requestParams = new RequestParams(Integer.parseInt(maxWidth),Integer.parseInt(maxHeight),photoReference,key);
+
+            PhotoExtractor task = new PhotoExtractor(new PhotoExtractorListener() {
+                @Override
+                public void photoDownloaded(Bitmap photo) {
+
+                    if (photo != null) {
+                        photo_ = photo;
+                    }
+                }
+            });
+
+            task.execute(requestParams);
+            return photo_;
+        } else {
+            Log.e(LOG_TAG, "Invalid input params");
+            throw new InvalidParameterException("Invalid input params");
+        }
+    }
+
+    private class PhotoExtractor extends AsyncTask<RequestParams, Void, Bitmap> {
+
+       PhotoExtractorListener listener;
+
+        public PhotoExtractor(PhotoExtractorListener listener){
+            this.listener = listener;
+        }
+
+        // ATTENTION
+        // PARAMS represents 4 args: width,height,photoRefs,key
+        protected Bitmap doInBackground(RequestParams... params) {
+            if (params.length == 0) {
+                return null;
+            }
+            // Create photo request query
+            URL url = getQuery(params[0]);
+            // Send request
+            Bitmap photo = sendPhotoRequest(url);
+            return photo;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap photo){
+            listener.photoDownloaded(photo);
+        }
+    }
 
     /**
      * Creates query for getting photo
-     *
-     * @param maxWidth       maximum desired width
-     * @param maxHeight      maximum desired height
-     * @param photoReference a string identifier that uniquely identifies a photo. Are returned from Place Details request
-     * @param key            is a Google Places Api Key, in general it is storing at mainifest.xml file
-     * @return
+     * maxWidth       maximum desired width
+     * maxHeight      maximum desired height
+     * photoReference a string identifier that uniquely identifies a photo. Are returned from Place Details request
+     * key            is a Google Places Api Key, in general it is storing at mainifest.xml file
      */
-    public static URL getQuery(String maxWidth, String maxHeight, String photoReference, String key) {
+    public static URL getQuery(RequestParams requestParams) {
         URL url = null;
         try {
             Uri builtUri = Uri.parse(BASE_PHOTO_URL).buildUpon()
-                    .appendQueryParameter(MAX_WIDTH_KEY, maxWidth)
-                    .appendQueryParameter(MAX_HEIGHT_KEY, maxHeight)
-                    .appendQueryParameter(PHOTO_REFERENCE_KEY, photoReference)
-                    .appendQueryParameter(GOOGLE_PLACES_API_KEY, key)
+                    .appendQueryParameter(MAX_WIDTH_KEY, requestParams.getMaxWidth())
+                    .appendQueryParameter(MAX_HEIGHT_KEY, requestParams.getMaxHeight())
+                    .appendQueryParameter(PHOTO_REFERENCE_KEY, requestParams.getPhotoReference())
+                    .appendQueryParameter(GOOGLE_PLACES_API_KEY, requestParams.getApiKey())
                     .build();
 
             url = new URL(builtUri.toString());

@@ -24,7 +24,17 @@ public class RequestParams {
     private String placeId_;
     private String maxWidth;
     private String maxHeight;
-    private String photoReference;
+    private String photoReference_;
+
+    public String getPhotoReference() {
+        return this.photoReference_;
+    }
+
+    public void setPhotoReference(String photoReference) {
+        this.photoReference_ = photoReference;
+    }
+
+
 
 
     //region Accessors
@@ -102,7 +112,7 @@ public class RequestParams {
     public RequestParams(int maxWidth, int maxHeight, String photoReference, String key){
         setMaxWidth(maxWidth);
         setMaxHeight(maxHeight);
-        this.photoReference = photoReference;
+        this.photoReference_ = photoReference;
         this.apiKey_ = key;
     }
 

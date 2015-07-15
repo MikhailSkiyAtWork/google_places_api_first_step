@@ -1,12 +1,15 @@
 package com.example.admin.googleplaces.requests;
 
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.admin.googleplaces.listeners.AsyncTaskListener;
 import com.example.admin.googleplaces.models.Photo;
 import com.example.admin.googleplaces.models.NearbyPlaceDetails;
 import com.example.admin.googleplaces.helpers.JsonHelper;
 import com.example.admin.googleplaces.models.RequestParams;
+import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONException;
 
@@ -16,6 +19,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,21 +45,90 @@ public class FetchPlaceSearchRequest extends Request {
     private List<String> photoRefs_ = new ArrayList<>();
 
 
+
+
     private static final String LOG_TAG = FetchPlaceSearchRequest.class.getSimpleName();
 
-    public FetchPlaceSearchRequest(RequestParams params) {
-        URL url = getUrl(params);
-        response_ = sendRequest(url);
+//    public FetchPlaceSearchRequest(RequestParams params) {
+//        URL url = getUrl(params);
+//        response_ = sendRequest(url);
+//
+//        // WARNING реквест посылается асинхронно, мы не знаем когда будет ответ, как действовать дальше?
+//        try {
+//            places_ = FetchPlaceSearchRequest.getNearbyPlaces(response_);
+//        } catch (JSONException e) {
+//            Log.e(LOG_TAG, e.getMessage());
+//        }
+//
+//        photoRefs_ = FetchPlaceSearchRequest.getPhotoRefsFromAllPlaces(places_);
+//    }
 
-        // WARNING реквест посылается асинхронно, мы не знаем когда будет ответ, как действовать дальше?
-        try {
-            places_ = FetchPlaceSearchRequest.parseSearchPlacesResponse(response_);
-        } catch (JSONException e) {
-            Log.e(LOG_TAG, e.getMessage());
+    public FetchPlaceSearchRequest(RequestParams requestParams) {
+
+
+    }
+
+    public static List<NearbyPlaceDetails> getPlaceInfo(LatLng point, String key) {
+        if ((point != null) && (key != null)) {
+
+            RequestParams requestParams = new RequestParams(point,50,key);
+
+            WebApiWorker task = new WebApiWorker(new AsyncTaskListener() {
+                @Override
+                public void onTaskCompleted(String response) {
+
+                    if (response != null) {
+                        try {
+                           places_ = FetchPlaceSearchRequest.getNearbyPlaces(response);
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+
+
+                }
+            });
+            task.execute(requestParams);
+
+
+
+            return places_;
+        } else {
+            Log.e(LOG_TAG, "Invalid input params");
+            throw new InvalidParameterException("Invalid input params");
+        }
+    }
+
+
+
+    private class WebApiWorker extends AsyncTask<RequestParams, Void, String> {
+
+        private final String LOG_TAG = WebApiWorker.class.getSimpleName();
+        AsyncTaskListener listener;
+
+        public WebApiWorker(AsyncTaskListener listener){
+            this.listener = listener;
         }
 
-        photoRefs_ = FetchPlaceSearchRequest.getPhotoRefsFromAllPlaces(places_);
-    }
+        protected String doInBackground(RequestParams... params) {
+
+            if (params.length == 0) {
+                return null;
+            }
+            // Create the appropriate URL
+            URL url = getUrl(params[0]);
+            // Send search request
+            String response = sendRequest(url);
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            listener.onTaskCompleted(result);
+        }
+
+
+}
 
     /**
      * Returns the response from the server as a string
@@ -106,6 +179,57 @@ public class FetchPlaceSearchRequest extends Request {
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
 
+            int responseCode = urlConnection.getResponseCode();
+
+            switch (responseCode){
+                case (200):
+                {
+                    throw new IOException();
+                }
+
+                case (201):
+                {
+                    throw new IOException();
+                }
+
+                case (204):
+                {
+                    throw new IOException();
+                }
+
+                case (401):
+                {
+                    throw new IOException();
+                }
+
+                case (403):
+                {
+                    throw new IOException();
+                }
+
+                case (404):
+                {
+                    throw new IOException();
+                }
+
+                case (405):
+                {
+                    throw new IOException();
+                }
+
+                case (422):
+                {
+                    throw new IOException();
+                }
+
+                case (500):
+                {
+                    throw new IOException();
+                }
+                default:break;
+
+            }
+
             // Read the input stream into a String
             InputStream inputStream = urlConnection.getInputStream();
             StringBuffer buffer = new StringBuffer();
@@ -145,7 +269,7 @@ public class FetchPlaceSearchRequest extends Request {
     /**
      * Returns All nearby places and some details about such places
      */
-    public static List<NearbyPlaceDetails> parseSearchPlacesResponse(String jsonResponse) throws JSONException {
+    public static List<NearbyPlaceDetails> getNearbyPlaces(String jsonResponse) throws JSONException {
         List<NearbyPlaceDetails> nearbyPlaceDetailsList = JsonHelper.getAllNearbyPlaces(jsonResponse);
         return nearbyPlaceDetailsList;
     }

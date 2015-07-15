@@ -9,6 +9,7 @@ import com.example.admin.googleplaces.models.NearbyPlaceDetails;
 import com.example.admin.googleplaces.models.RequestParams;
 import com.example.admin.googleplaces.requests.FetchPhotoRequest;
 import com.example.admin.googleplaces.requests.FetchPlaceSearchRequest;
+import com.example.admin.googleplaces.listeners.*;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONException;
@@ -30,7 +31,27 @@ public class WebApiManager {
         if ((point != null) && (key != null)) {
             apiKey = key;
             RequestParams requestParams = new RequestParams(point,50,key);
-            new WebApiWorker().execute(requestParams);
+
+            WebApiWorker task = new WebApiWorker(new AsyncTaskListener() {
+                @Override
+                public void onTaskCompleted(String response) {
+
+                    if (response != null) {
+                        try {
+                            List<NearbyPlaceDetails> places = FetchPlaceSearchRequest.getNearbyPlaces(response);
+                            List<String> photoRefs = FetchPlaceSearchRequest.getPhotoRefsFromAllPlaces(places);
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+
+
+                }
+            });
+            task.execute(requestParams);
+
+
+
             return info_;
         } else {
             Log.e(LOG_TAG, "Invalid input params");
@@ -38,9 +59,14 @@ public class WebApiManager {
         }
     }
 
-    private class WebApiWorker extends AsyncTask<RequestParams, Void, String> {
+    private class WebApiWorker extends AsyncTask<RequestParams, Void, String>  {
 
         private final String LOG_TAG = WebApiWorker.class.getSimpleName();
+        AsyncTaskListener listener;
+
+        public WebApiWorker(AsyncTaskListener listener){
+            this.listener = listener;
+        }
 
         protected String doInBackground(RequestParams... params) {
 
@@ -48,36 +74,29 @@ public class WebApiManager {
                 return null;
             }
 
-            // Create search query
-
-            FetchPlaceSearchRequest placeSearchRequest = new FetchPlaceSearchRequest(params[0]);
-
-
-//            Request placeSearchRequest = new FetchPlaceSearchRequest(params[0]);
-//            if (placeSearchRequest instanceof Request ) {
-//                FetchPlaceSearchRequest aff=  (FetchPlaceSearchRequest)placeSearchRequest;
-//
-//            }
-
-
-            return data;
+            FetchPlaceSearchRequest placeSearchRequest = new FetchPlaceSearchRequest();
+            URL url = placeSearchRequest.getUrl(params[0]);
+            String response = placeSearchRequest.sendRequest(url);
+            return response;
         }
 
         @Override
         protected void onPostExecute(String result) {
-            try {
-                if (result != null) {
-                    List<NearbyPlaceDetails> places = FetchPlaceSearchRequest.parseSearchPlacesResponse(result);
-                    List<String> photoRefs = FetchPlaceSearchRequest.getPhotoRefsFromAllPlaces(places);
-
-                    if ((photoRefs != null) && (photoRefs.size() != 0)) {
-                        new PhotoExtractor().execute(Integer.toString(400), Integer.toString(400), photoRefs.get(0), apiKey);
-                    }
-                }
-
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
+//            try {
+                listener.onTaskCompleted(String result);
             }
+//                if (result != null) {
+//                    List<NearbyPlaceDetails> places = FetchPlaceSearchRequest.getNearbyPlaces(result);
+//                    List<String> photoRefs = FetchPlaceSearchRequest.getPhotoRefsFromAllPlaces(places);
+//
+//                    if ((photoRefs != null) && (photoRefs.size() != 0)) {
+//                        new PhotoExtractor().execute(Integer.toString(400), Integer.toString(400), photoRefs.get(0), apiKey);
+//                    }
+//                }
+//
+//            } catch (JSONException e) {
+//                throw new RuntimeException(e);
+//            }
         }
     }
 
