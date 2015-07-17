@@ -48,6 +48,12 @@
                 android:paddingTop="10dp"
                 android:text="DESCRIPTION" />
 
+            <Button
+                android:id="@+id/more"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="More..." />
+
             <TextView
                 android:id="@+id/link"
                 android:layout_width="wrap_content"

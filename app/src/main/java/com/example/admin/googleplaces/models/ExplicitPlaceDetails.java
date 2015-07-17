@@ -13,6 +13,8 @@ public class ExplicitPlaceDetails extends PlaceDetails {
     private String name_;
     private List<Photo> photos_;
 
+    public  ExplicitPlaceDetails(){}
+
     //region Accessors
     public String getName() {
         return this.name_;

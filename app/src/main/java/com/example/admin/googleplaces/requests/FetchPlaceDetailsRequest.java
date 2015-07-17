@@ -27,27 +27,22 @@ import java.util.List;
 /**
  * Contain fields and methods which are necessary for sending Place Details request
  */
-public class FetchPlaceDetailsRequest extends Request {
+public class FetchPlaceDetailsRequest  {
 
     //region Keys for Place Details building query
     private static final String BASE_PLACE_DETAILS_URL = "https://maps.googleapis.com/maps/api/place/details/json?";
     private static final String PLACE_ID_KEY = "placeid";
+    protected static final String GOOGLE_PLACES_API_KEY = "key";
     //endregion
 
     private String response_;
     private ExplicitPlaceDetails details_;
     private List<Photo> photoRefs = new ArrayList<Photo>();
+    private RequestParams requestParams_;
 
 
     public FetchPlaceDetailsRequest(RequestParams params){
-        URL url = getUrl(params);
-        response_ = sendRequest(url);
-        try {
-            details_ = parsePlaceDetailsResponse(response_);
-        } catch (JSONException e) {
-            Log.e(LOG_TAG, e.getMessage());
-        }
-        photoRefs = details_.getPhotos();
+        this.requestParams_ = params;
     }
 
     public String getResponse() {
@@ -64,12 +59,12 @@ public class FetchPlaceDetailsRequest extends Request {
      * @return URL of Place Details request
      */
 
-    public URL getUrl(RequestParams requestParams) {
+    public URL getUrl() {
         URL url = null;
         try {
             Uri placeDetailsUri = Uri.parse(BASE_PLACE_DETAILS_URL).buildUpon()
-                    .appendQueryParameter(PLACE_ID_KEY, requestParams.getPlaceId())
-                    .appendQueryParameter(GOOGLE_PLACES_API_KEY, requestParams.getApiKey())
+                    .appendQueryParameter(PLACE_ID_KEY, requestParams_.getPlaceId())
+                    .appendQueryParameter(GOOGLE_PLACES_API_KEY, requestParams_.getApiKey())
                     .build();
 
             url = new URL(placeDetailsUri.toString());

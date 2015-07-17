@@ -12,6 +12,6 @@ public abstract class Request {
     protected static final String GOOGLE_PLACES_API_KEY = "key";
 
     public abstract URL getUrl(RequestParams params);
-    public abstract String sendRequest(URL url);
+    public abstract String sendRequest();
     public abstract String getResponse();
 }

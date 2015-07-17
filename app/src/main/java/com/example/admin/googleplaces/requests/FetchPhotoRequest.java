@@ -9,7 +9,7 @@ import android.util.Log;
 import com.example.admin.googleplaces.activities.MainActivity;
 import com.example.admin.googleplaces.listeners.AsyncTaskListener;
 import com.example.admin.googleplaces.listeners.PhotoExtractorListener;
-import com.example.admin.googleplaces.managers.PhotoExtractor;
+
 import com.example.admin.googleplaces.models.NearbyPlaceDetails;
 import com.example.admin.googleplaces.models.RequestParams;
 import com.google.android.gms.maps.model.LatLng;

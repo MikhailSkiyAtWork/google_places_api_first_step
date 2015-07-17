@@ -26,13 +26,14 @@ import java.util.List;
 /**
  * Created by Mikhail Valuyskiy on 06.07.2015.
  */
-public class FetchPlaceSearchRequest extends Request {
+public class FetchPlaceSearchRequest  {
 
     //region Keys for building query
     private static final String BASE_PLACE_SEARCH_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?";
     private static final String LOCATION_KEY = "location";
     private static final String RADIUS_KEY = "radius";
     private static final String SENSOR_KEY = "sensor";
+    protected static final String GOOGLE_PLACES_API_KEY = "key";
     //endregion
 
     //region Values for building query
@@ -43,6 +44,7 @@ public class FetchPlaceSearchRequest extends Request {
     private String response_;
     private List<NearbyPlaceDetails> places_ = new ArrayList<>();
     private List<String> photoRefs_ = new ArrayList<>();
+    private RequestParams requestParams_;
 
 
 
@@ -64,11 +66,10 @@ public class FetchPlaceSearchRequest extends Request {
 //    }
 
     public FetchPlaceSearchRequest(RequestParams requestParams) {
-
-
+        this.requestParams_ = requestParams;
     }
 
-    public static List<NearbyPlaceDetails> getPlaceInfo(LatLng point, String key) {
+    public List<NearbyPlaceDetails> getPlaceInfo(LatLng point, String key) {
         if ((point != null) && (key != null)) {
 
             RequestParams requestParams = new RequestParams(point,50,key);
@@ -79,7 +80,7 @@ public class FetchPlaceSearchRequest extends Request {
 
                     if (response != null) {
                         try {
-                           places_ = FetchPlaceSearchRequest.getNearbyPlaces(response);
+                           places_ = getNearbyPlaces(response);
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
@@ -116,7 +117,8 @@ public class FetchPlaceSearchRequest extends Request {
                 return null;
             }
             // Create the appropriate URL
-            URL url = getUrl(params[0]);
+//            URL url = getUrl(params[0]);
+            URL url = getUrl();
             // Send search request
             String response = sendRequest(url);
             return response;
@@ -146,13 +148,13 @@ public class FetchPlaceSearchRequest extends Request {
      */
     // TODO add radius as arg (such as it will posiible change radius from config)
     // TODO Check requestParams.getPoint() and others not null or empty
-    public URL getUrl(RequestParams requestParams) {
+    public URL getUrl() {
         URL url = null;
         try {
             Uri builtUri = Uri.parse(BASE_PLACE_SEARCH_URL).buildUpon()
-                    .appendQueryParameter(LOCATION_KEY, requestParams.getPoint())
-                    .appendQueryParameter(RADIUS_KEY, requestParams.getRadius())
-                    .appendQueryParameter(GOOGLE_PLACES_API_KEY, requestParams.getApiKey())
+                    .appendQueryParameter(LOCATION_KEY, this.requestParams_.getPoint())
+                    .appendQueryParameter(RADIUS_KEY, this.requestParams_.getRadius())
+                    .appendQueryParameter(GOOGLE_PLACES_API_KEY, this.requestParams_.getApiKey())
                     .build();
 
             url = new URL(builtUri.toString());
@@ -181,54 +183,54 @@ public class FetchPlaceSearchRequest extends Request {
 
             int responseCode = urlConnection.getResponseCode();
 
-            switch (responseCode){
-                case (200):
-                {
-                    throw new IOException();
-                }
-
-                case (201):
-                {
-                    throw new IOException();
-                }
-
-                case (204):
-                {
-                    throw new IOException();
-                }
-
-                case (401):
-                {
-                    throw new IOException();
-                }
-
-                case (403):
-                {
-                    throw new IOException();
-                }
-
-                case (404):
-                {
-                    throw new IOException();
-                }
-
-                case (405):
-                {
-                    throw new IOException();
-                }
-
-                case (422):
-                {
-                    throw new IOException();
-                }
-
-                case (500):
-                {
-                    throw new IOException();
-                }
-                default:break;
-
-            }
+//            switch (responseCode){
+//                case (200):
+//                {
+//                    throw new IOException();
+//                }
+//
+//                case (201):
+//                {
+//                    throw new IOException();
+//                }
+//
+//                case (204):
+//                {
+//                    throw new IOException();
+//                }
+//
+//                case (401):
+//                {
+//                    throw new IOException();
+//                }
+//
+//                case (403):
+//                {
+//                    throw new IOException();
+//                }
+//
+//                case (404):
+//                {
+//                    throw new IOException();
+//                }
+//
+//                case (405):
+//                {
+//                    throw new IOException();
+//                }
+//
+//                case (422):
+//                {
+//                    throw new IOException();
+//                }
+//
+//                case (500):
+//                {
+//                    throw new IOException();
+//                }
+//                default:break;
+//
+//            }
 
             // Read the input stream into a String
             InputStream inputStream = urlConnection.getInputStream();
@@ -277,7 +279,7 @@ public class FetchPlaceSearchRequest extends Request {
     /**
      * Returns all nearby places which have photos
      */
-    public static List<NearbyPlaceDetails> getPlacesWithPhoto(List<NearbyPlaceDetails> places) {
+    public static   List<NearbyPlaceDetails> getPlacesWithPhoto(List<NearbyPlaceDetails> places) {
         if (places.size() != 0) {
             List<NearbyPlaceDetails> placesWithPhoto = new ArrayList<NearbyPlaceDetails>();
             List<String> photoRefsFromPlace = new ArrayList<String>();
@@ -317,9 +319,8 @@ public class FetchPlaceSearchRequest extends Request {
                 photoRefs.add(photos.get(i).getPhotoReference());
             }
             return photoRefs;
-        } else {
-            return null;
         }
+        return photoRefs;
     }
 
 

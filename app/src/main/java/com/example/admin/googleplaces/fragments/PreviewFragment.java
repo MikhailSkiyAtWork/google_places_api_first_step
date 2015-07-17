@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.admin.googleplaces.R;
-import com.example.admin.googleplaces.managers.WebApiManager;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -52,9 +51,9 @@ public class PreviewFragment extends Fragment implements GoogleMap.OnMapClickLis
         /////////
 
         // ??? String location = Utily.getStringLocation(latLng);
-        WebApiManager manager = new WebApiManager();
+      //  WebApiManager manager = new WebApiManager();
         String key = getApiKey();
-        String result = manager.getPlaceInfo(latLng, key);
+     //   String result = manager.getPlaceInfo(latLng, key);
 
         // TODO SET PREVIEW HERE!!!
 //        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.mipmap.chehov);
