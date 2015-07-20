@@ -6,8 +6,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.example.admin.googleplaces.listeners.PhotoExtractorListener;
-
 import com.example.admin.googleplaces.models.RequestParams;
 
 import java.io.BufferedReader;

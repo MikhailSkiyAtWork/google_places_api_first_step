@@ -40,41 +40,45 @@ public class MessageHandler extends Handler {
             case States.SEND_SEARCH_REQUEST:
                 break;
             case States.NEARBY_PLACES_WAS_FOUND:
-                String response = (String) msg.obj;
-                List<NearbyPlaceDetails> nearbyPlaces = new ArrayList<>();
-                List<NearbyPlaceDetails> placesWithPhoto = new ArrayList<>();
-                try {
-                    nearbyPlaces = FetchPlaceSearchRequest.getNearbyPlaces(response);
-                    placesWithPhoto = FetchPlaceSearchRequest.getPlacesWithPhoto(nearbyPlaces);
-                } catch (JSONException e) {
-                    Log.e("ERROR", e.getMessage());
+                if (msg.obj != null) {
+                    String response = (String) msg.obj;
+                    manager.parseSearchResponse(response);
                 }
+                break;
 
-                if (placesWithPhoto.size() != 0) {
-                    previewData_.setName(placesWithPhoto.get(FIRST_ITEM).getName());
-                    previewData_.setPlaceId(placesWithPhoto.get(0).getPlaceId());
-
-                    manager.sendPhotoRequest(placesWithPhoto.get(FIRST_ITEM));
+            case States.SEARCH_RESPONSE_WAS_PARSE_OUT:
+                if (msg.obj != null) {
+                    List<NearbyPlaceDetails> fetchedPlaces = (List<NearbyPlaceDetails>) msg.obj;
+                    if (fetchedPlaces.size() != 0) {
+                        previewData_.setName(fetchedPlaces.get(FIRST_ITEM).getName());
+                        previewData_.setPlaceId(fetchedPlaces.get(FIRST_ITEM).getPlaceId());
+                        manager.sendPhotoRequest(fetchedPlaces.get(FIRST_ITEM));
+                    }
                 }
                 break;
 
             case States.PHOTO_DOWNLOADED:
-                ArrayList<Bitmap> images = new ArrayList<Bitmap>();
-                images = (ArrayList<Bitmap>) msg.obj;
-                previewData_.setImages(images);
-                manager.updatePreview(previewData_);
+                if (msg.obj != null) {
+                    ArrayList<Bitmap> images = new ArrayList<Bitmap>();
+                    images = (ArrayList<Bitmap>) msg.obj;
+                    previewData_.setImages(images);
+                    manager.updatePreview(previewData_);
+                }
                 break;
 
             case States.EXPLICIT_DETAILS_FETCHED:
-                String placeDetailsResponse = (String) msg.obj;
-                manager.parseDetailedResponse(placeDetailsResponse);
+                if (msg.obj != null) {
+                    String placeDetailsResponse = (String) msg.obj;
+                    manager.parseDetailedResponse(placeDetailsResponse);
+                }
                 break;
 
             case States.EXPLICIT_DETAILS_WAS_PARSE_OUT:
-                ExplicitPlaceDetails details = (ExplicitPlaceDetails)msg.obj;
-                manager.sendPhotoRequest(details);
+                if (msg.obj != null) {
+                    ExplicitPlaceDetails details = (ExplicitPlaceDetails) msg.obj;
+                    manager.sendPhotoRequest(details);
+                }
                 break;
         }
-
     }
 }

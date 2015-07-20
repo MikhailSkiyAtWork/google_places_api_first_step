@@ -6,6 +6,7 @@ import android.util.Log;
 import com.example.admin.googleplaces.handlers.MessageHandler;
 import com.example.admin.googleplaces.interfaces.UIactions;
 import com.example.admin.googleplaces.models.ExplicitPlaceDetails;
+import com.example.admin.googleplaces.models.NearbyPlaceDetails;
 import com.example.admin.googleplaces.models.Photo;
 import com.example.admin.googleplaces.models.PlaceDetails;
 import com.example.admin.googleplaces.models.PreviewData;
@@ -37,6 +38,24 @@ public class RequestManager {
        this.clientActivity_ = clienActivity;
     }
 
+    /**
+     * Parses json response which contains result of searching nearby places
+     */
+    public void parseSearchResponse(String response){
+        List<NearbyPlaceDetails> nearbyPlaces = new ArrayList<>();
+        List<NearbyPlaceDetails> placesWithPhoto = new ArrayList<>();
+        try {
+            nearbyPlaces = FetchPlaceSearchRequest.getNearbyPlaces(response);
+            placesWithPhoto = FetchPlaceSearchRequest.getPlacesWithPhoto(nearbyPlaces);
+        } catch (JSONException e) {
+            Log.e("ERROR", e.getMessage());
+        }
+        handler_.sendMessage(handler_.obtainMessage(States.SEARCH_RESPONSE_WAS_PARSE_OUT,placesWithPhoto));
+    }
+
+    /**
+     * Parses json response which contains details about place asynchronously
+     */
     public void parseDetailedResponse(String response){
         ExplicitPlaceDetails details = new ExplicitPlaceDetails();
         try {
@@ -62,7 +81,7 @@ public class RequestManager {
         background.start();
     }
 
-    public  void sendSearchRequest(final RequestParams requestParams){
+    public void sendSearchRequest(final RequestParams requestParams){
         Thread background = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -121,7 +140,5 @@ public class RequestManager {
     public void updatePreview(PreviewData previewData){
         clientActivity_.showPreview(previewData);
     }
-
-
 
 }
