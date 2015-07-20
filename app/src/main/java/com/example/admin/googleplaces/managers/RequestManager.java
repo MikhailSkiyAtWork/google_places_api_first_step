@@ -13,6 +13,7 @@ import com.example.admin.googleplaces.models.RequestParams;
 import com.example.admin.googleplaces.requests.FetchPhotoRequest;
 import com.example.admin.googleplaces.requests.FetchPlaceDetailsRequest;
 import com.example.admin.googleplaces.requests.FetchPlaceSearchRequest;
+import com.example.admin.googleplaces.helpers.States;
 
 import org.json.JSONException;
 
@@ -24,12 +25,6 @@ import java.util.List;
  * Created by Mikhail Valuyskiy on 17.07.2015.
  */
 public class RequestManager {
-
-    private static final int SEND_SEARCH_REQUEST = 1;
-    private static final int NEARBY_PLACES_WAS_FOUND = 2;
-    private static final int PHOTO_DOWNLOADED = 3;
-    private static final int SEND_DETAILS_REQUEST = 4;
-    private static final int SEND_PHOTOSSS_REQUEST =5;
 
     private  MessageHandler handler_ = new MessageHandler(this);
     private UIactions clientActivity_;
@@ -49,7 +44,7 @@ public class RequestManager {
         } catch (JSONException e) {
             Log.e("ERROR", e.getMessage());
         }
-        handler_.sendMessage(handler_.obtainMessage(EXPLICIT_DETAILS_WAS_PARSE_OUT,details));
+        handler_.sendMessage(handler_.obtainMessage(States.EXPLICIT_DETAILS_WAS_PARSE_OUT,details));
     }
 
     public  void sendDetailedRequest(final RequestParams requestParams){
@@ -61,7 +56,7 @@ public class RequestManager {
 
                 String response = searchRequest.sendRequest(url);
 
-                handler_.sendMessage(handler_.obtainMessage(SEND_PHOTOSSS_REQUEST,response));
+                handler_.sendMessage(handler_.obtainMessage(States.EXPLICIT_DETAILS_FETCHED,response));
             }
         });
         background.start();
@@ -74,7 +69,7 @@ public class RequestManager {
                 FetchPlaceSearchRequest searchRequest = new FetchPlaceSearchRequest(requestParams);
                 URL url = searchRequest.getUrl();
                 String response = searchRequest.sendRequest(url);
-                handler_.sendMessage(handler_.obtainMessage(NEARBY_PLACES_WAS_FOUND,response));
+                handler_.sendMessage(handler_.obtainMessage(States.NEARBY_PLACES_WAS_FOUND,response));
             }
         });
         background.start();
@@ -95,7 +90,7 @@ public class RequestManager {
                     URL url = photoRequest.getUrl();
                     Bitmap a = photoRequest.sendPhotoRequest(url);
                     photos.add(a);
-                    handler_.sendMessage(handler_.obtainMessage(PHOTO_DOWNLOADED, photos));
+                    handler_.sendMessage(handler_.obtainMessage(States.PHOTO_DOWNLOADED, photos));
                 }
             });
             back.start();
@@ -116,7 +111,7 @@ public class RequestManager {
                     URL url = photoRequest.getUrl();
                     Bitmap a = photoRequest.sendPhotoRequest(url);
                     images.add(a);
-                    handler_.sendMessage(handler_.obtainMessage(PHOTO_DOWNLOADED, images));
+                    handler_.sendMessage(handler_.obtainMessage(States.PHOTO_DOWNLOADED, images));
                 }
             });
             back.start();

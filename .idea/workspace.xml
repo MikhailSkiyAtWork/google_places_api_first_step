@@ -22,23 +22,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9547bfa4-f3b3-4545-9fa8-5f7592a875ba" name="Default" comment="">
-      <change type="DELETED" beforePath="C:\Users\Admin\AndroidStudioProjects\GooglePlaces\app\src\main\java\com\example\admin\googleplaces\managers\WebApiManager.java" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Admin\AndroidStudioProjects\GooglePlaces\app\src\main\java\com\example\admin\googleplaces\requests\Request.java" afterPath="" />
-      <change type="MOVED" beforePath="C:\Users\Admin\AndroidStudioProjects\GooglePlaces\app\src\main\java\com\example\admin\googleplaces\interfaces\Requests.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/interfaces/UIactions.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/models/ExplicitPlaceDetails.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/models/ExplicitPlaceDetails.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/requests/FetchPhotoRequest.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/requests/FetchPhotoRequest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/requests/FetchPlaceDetailsRequest.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/requests/FetchPlaceDetailsRequest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/requests/FetchPlaceSearchRequest.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/requests/FetchPlaceSearchRequest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/activities/GalleryActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/activities/GalleryActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/activities/MainActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/activities/MainActivity.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/helpers/States.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/handlers/MessageHandler.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/handlers/MessageHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/models/NearbyPlaceDetails.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/models/NearbyPlaceDetails.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/models/PlaceDetails.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/models/PlaceDetails.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/models/PreviewData.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/models/PreviewData.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/managers/RequestManager.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/managers/RequestManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/models/RequestParams.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/models/RequestParams.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="GooglePlaces.iws" />
@@ -62,11 +48,11 @@
             <file leaf-file-name="MessageHandler.java" pinned="false" current-in-tab="true">
               <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/handlers/MessageHandler.java">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state vertical-scroll-proportion="0.6930023">
-                    <caret line="70" column="63" selection-start-line="70" selection-start-column="63" selection-end-line="70" selection-end-column="63" />
+                  <state vertical-scroll-proportion="0.520316">
+                    <caret line="60" column="41" selection-start-line="60" selection-start-column="41" selection-end-line="60" selection-end-column="41" />
                     <folding>
                       <element signature="imports" expanded="true" />
-                      <element signature="e#2530#2538#0" expanded="true" />
+                      <element signature="e#2330#2338#0" expanded="true" />
                     </folding>
                   </state>
                 </provider>
@@ -123,18 +109,38 @@
       <file leaf-file-name="RequestManager.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/managers/RequestManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.784375">
-              <caret line="61" column="65" selection-start-line="61" selection-start-column="65" selection-end-line="61" selection-end-column="65" />
+            <state vertical-scroll-proportion="0.359375">
+              <caret line="103" column="0" selection-start-line="103" selection-start-column="0" selection-end-line="103" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#3427#3941#0" expanded="true" />
-                <element signature="e#3940#3941#0" expanded="true" />
-                <element signature="e#4271#4791#0" expanded="true" />
-                <element signature="e#4409#4417#0" expanded="true" />
-                <element signature="e#4790#4791#0" expanded="true" />
-                <element signature="e#4891#4892#0" expanded="true" />
-                <element signature="e#4947#4948#0" expanded="true" />
+                <element signature="e#3231#3752#0" expanded="true" />
+                <element signature="e#3751#3752#0" expanded="true" />
+                <element signature="e#4082#4609#0" expanded="true" />
+                <element signature="e#4220#4228#0" expanded="true" />
+                <element signature="e#4608#4609#0" expanded="true" />
+                <element signature="e#4709#4710#0" expanded="true" />
+                <element signature="e#4765#4766#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Utily.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/helpers/Utily.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="17" column="44" selection-start-line="17" selection-start-column="44" selection-end-line="17" selection-end-column="44" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="States.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/helpers/States.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="11" column="63" selection-start-line="11" selection-start-column="63" selection-end-line="11" selection-end-column="63" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -180,16 +186,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="58" column="7" selection-start-line="58" selection-start-column="7" selection-end-line="58" selection-end-column="7" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="NearbyPlaceDetails.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/models/NearbyPlaceDetails.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="12" column="47" selection-start-line="12" selection-start-column="47" selection-end-line="12" selection-end-column="47" />
               <folding />
             </state>
           </provider>
@@ -1615,6 +1611,7 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/requests/FetchPlaceDetailsRequest.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/requests/FetchPlaceSearchRequest.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/requests/FetchPhotoRequest.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/helpers/States.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/managers/RequestManager.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/handlers/MessageHandler.java" />
       </list>
@@ -2378,55 +2375,55 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/handlers/MessageHandler.java</url>
-          <line>49</line>
+          <line>46</line>
           <properties />
           <option name="timeStamp" value="51" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/handlers/MessageHandler.java</url>
-          <line>62</line>
+          <line>60</line>
           <properties />
           <option name="timeStamp" value="52" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/handlers/MessageHandler.java</url>
-          <line>45</line>
+          <line>42</line>
           <properties />
           <option name="timeStamp" value="53" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/managers/RequestManager.java</url>
-          <line>115</line>
+          <line>110</line>
           <properties />
           <option name="timeStamp" value="54" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/managers/RequestManager.java</url>
-          <line>116</line>
+          <line>111</line>
           <properties />
           <option name="timeStamp" value="55" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/managers/RequestManager.java</url>
-          <line>117</line>
+          <line>112</line>
           <properties />
           <option name="timeStamp" value="56" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/managers/RequestManager.java</url>
-          <line>118</line>
+          <line>113</line>
           <properties />
           <option name="timeStamp" value="57" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/handlers/MessageHandler.java</url>
-          <line>63</line>
+          <line>61</line>
           <properties />
           <option name="timeStamp" value="58" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/handlers/MessageHandler.java</url>
-          <line>64</line>
+          <line>62</line>
           <properties />
           <option name="timeStamp" value="59" />
         </line-breakpoint>
@@ -2598,13 +2595,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="138" column="0" selection-start-line="138" selection-start-column="0" selection-end-line="138" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/helpers/Utily.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="34" column="7" selection-start-line="34" selection-start-column="7" selection-end-line="34" selection-end-column="7" />
         </state>
       </provider>
     </entry>
@@ -2845,30 +2835,46 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/helpers/Utily.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="17" column="44" selection-start-line="17" selection-start-column="44" selection-end-line="17" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/helpers/States.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="11" column="63" selection-start-line="11" selection-start-column="63" selection-end-line="11" selection-end-column="63" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/handlers/MessageHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6930023">
-          <caret line="70" column="63" selection-start-line="70" selection-start-column="63" selection-end-line="70" selection-end-column="63" />
+        <state vertical-scroll-proportion="0.520316">
+          <caret line="60" column="41" selection-start-line="60" selection-start-column="41" selection-end-line="60" selection-end-column="41" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#2530#2538#0" expanded="true" />
+            <element signature="e#2330#2338#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/admin/googleplaces/managers/RequestManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.784375">
-          <caret line="61" column="65" selection-start-line="61" selection-start-column="65" selection-end-line="61" selection-end-column="65" />
+        <state vertical-scroll-proportion="0.359375">
+          <caret line="103" column="0" selection-start-line="103" selection-start-column="0" selection-end-line="103" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#3427#3941#0" expanded="true" />
-            <element signature="e#3940#3941#0" expanded="true" />
-            <element signature="e#4271#4791#0" expanded="true" />
-            <element signature="e#4409#4417#0" expanded="true" />
-            <element signature="e#4790#4791#0" expanded="true" />
-            <element signature="e#4891#4892#0" expanded="true" />
-            <element signature="e#4947#4948#0" expanded="true" />
+            <element signature="e#3231#3752#0" expanded="true" />
+            <element signature="e#3751#3752#0" expanded="true" />
+            <element signature="e#4082#4609#0" expanded="true" />
+            <element signature="e#4220#4228#0" expanded="true" />
+            <element signature="e#4608#4609#0" expanded="true" />
+            <element signature="e#4709#4710#0" expanded="true" />
+            <element signature="e#4765#4766#0" expanded="true" />
           </folding>
         </state>
       </provider>
