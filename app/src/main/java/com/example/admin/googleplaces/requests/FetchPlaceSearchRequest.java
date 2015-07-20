@@ -51,100 +51,13 @@ public class FetchPlaceSearchRequest  {
 
     private static final String LOG_TAG = FetchPlaceSearchRequest.class.getSimpleName();
 
-//    public FetchPlaceSearchRequest(RequestParams params) {
-//        URL url = getUrl(params);
-//        response_ = sendRequest(url);
-//
-//        // WARNING реквест посылается асинхронно, мы не знаем когда будет ответ, как действовать дальше?
-//        try {
-//            places_ = FetchPlaceSearchRequest.getNearbyPlaces(response_);
-//        } catch (JSONException e) {
-//            Log.e(LOG_TAG, e.getMessage());
-//        }
-//
-//        photoRefs_ = FetchPlaceSearchRequest.getPhotoRefsFromAllPlaces(places_);
-//    }
 
     public FetchPlaceSearchRequest(RequestParams requestParams) {
         this.requestParams_ = requestParams;
     }
 
-    public List<NearbyPlaceDetails> getPlaceInfo(LatLng point, String key) {
-        if ((point != null) && (key != null)) {
-
-            RequestParams requestParams = new RequestParams(point,50,key);
-
-            WebApiWorker task = new WebApiWorker(new AsyncTaskListener() {
-                @Override
-                public void onTaskCompleted(String response) {
-
-                    if (response != null) {
-                        try {
-                           places_ = getNearbyPlaces(response);
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-
-
-                }
-            });
-            task.execute(requestParams);
-
-
-
-            return places_;
-        } else {
-            Log.e(LOG_TAG, "Invalid input params");
-            throw new InvalidParameterException("Invalid input params");
-        }
-    }
-
-
-
-    private class WebApiWorker extends AsyncTask<RequestParams, Void, String> {
-
-        private final String LOG_TAG = WebApiWorker.class.getSimpleName();
-        AsyncTaskListener listener;
-
-        public WebApiWorker(AsyncTaskListener listener){
-            this.listener = listener;
-        }
-
-        protected String doInBackground(RequestParams... params) {
-
-            if (params.length == 0) {
-                return null;
-            }
-            // Create the appropriate URL
-//            URL url = getUrl(params[0]);
-            URL url = getUrl();
-            // Send search request
-            String response = sendRequest(url);
-            return response;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            listener.onTaskCompleted(result);
-        }
-
-
-}
-
-    /**
-     * Returns the response from the server as a string
-     */
-    public String getResponse(){
-        return this.response_;
-    }
-
     /**
      * Creates query for search request by LatLng and Google Places API KEY
-     *
-     * @param point is LatLng objects, that represents latitude and longitude of chosen place
-     * @param key   is a Google Places Api Key, in general it is storing at mainifest.xml file
-     * @return the URL of search request
      */
     // TODO add radius as arg (such as it will posiible change radius from config)
     // TODO Check requestParams.getPoint() and others not null or empty
@@ -182,55 +95,6 @@ public class FetchPlaceSearchRequest  {
             urlConnection.connect();
 
             int responseCode = urlConnection.getResponseCode();
-
-//            switch (responseCode){
-//                case (200):
-//                {
-//                    throw new IOException();
-//                }
-//
-//                case (201):
-//                {
-//                    throw new IOException();
-//                }
-//
-//                case (204):
-//                {
-//                    throw new IOException();
-//                }
-//
-//                case (401):
-//                {
-//                    throw new IOException();
-//                }
-//
-//                case (403):
-//                {
-//                    throw new IOException();
-//                }
-//
-//                case (404):
-//                {
-//                    throw new IOException();
-//                }
-//
-//                case (405):
-//                {
-//                    throw new IOException();
-//                }
-//
-//                case (422):
-//                {
-//                    throw new IOException();
-//                }
-//
-//                case (500):
-//                {
-//                    throw new IOException();
-//                }
-//                default:break;
-//
-//            }
 
             // Read the input stream into a String
             InputStream inputStream = urlConnection.getInputStream();

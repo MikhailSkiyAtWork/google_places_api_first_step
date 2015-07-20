@@ -17,7 +17,7 @@ public class NearbyPlaceDetails extends PlaceDetails {
 
     // URL for icon
     private URL iconUrl_;
-    private List<Photo> photos_;
+
     private List<String> types_;
     private double rating_;
 

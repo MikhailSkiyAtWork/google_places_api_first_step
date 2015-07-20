@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by Mikhail Valuyskiy on 17.07.2015.
  */
-public interface Requests {
+public interface UIactions {
   //  public void sendSearchRequest(RequestParams requestParams);
   //  public void sendPhotoRequest (List<NearbyPlaceDetails> places);
     public void showPreview(PreviewData previewData);

@@ -2,6 +2,7 @@ package com.example.admin.googleplaces.models;
 
 import android.graphics.Bitmap;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,15 +11,15 @@ import java.util.List;
 public class PreviewData {
     private String name_;
     private String address_;
-    private List<Bitmap> image_;
+    private ArrayList<Bitmap> images_;
     private String placeId_;
 
-    public List<Bitmap> getImage_() {
-        return image_;
+    public List<Bitmap> getImages() {
+        return images_;
     }
 
-    public void setImage_(List<Bitmap> image_) {
-        this.image_ = image_;
+    public void setImages(ArrayList<Bitmap> images) {
+        this.images_ = images;
     }
 
 
@@ -37,8 +38,6 @@ public class PreviewData {
     public void setAddress(String address) {
         this.address_ = address;
     }
-
-
 
     public String getPlaceId() {
         return this.placeId_;

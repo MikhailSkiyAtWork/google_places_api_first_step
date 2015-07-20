@@ -36,7 +36,7 @@
 
 
             <TextView
-                android:id="@+id/locinfo"
+                android:id="@+id/place_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="HELLO" />
@@ -64,7 +64,7 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/cover_image_view"
+            android:id="@+id/preview_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/ic_launcher" />

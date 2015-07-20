@@ -16,14 +16,25 @@ public class RequestParams {
 
     // Base URL
     private String baseUrl_;
+
     // Google Places Api Key
     private String apiKey_;
+
     // Latitude and Longitude of point
     private String point_;
+
     private String radius_;
+
+    // A textual identifier that uniquely identifies a place, returned from a Place Search request
     private String placeId_;
+
+    // Maximum desired width
     private String maxWidth;
+
+    // Maximum desired height
     private String maxHeight;
+
+    //  A string identifier that uniquely identifies a photo. Are returned from Place Details request
     private String photoReference_;
 
     public String getPhotoReference() {

@@ -53,12 +53,7 @@ public class FetchPlaceDetailsRequest  {
 
     /**
      * Creates query for place details request by placeId and Google Places API KEY
-     *
-     * @param placeId a textual identifier that uniquely identifies a place, returned from a Place Search
-     * @param key     is a Google Places Api Key, in general it is storing at mainifest.xml file
-     * @return URL of Place Details request
      */
-
     public URL getUrl() {
         URL url = null;
         try {

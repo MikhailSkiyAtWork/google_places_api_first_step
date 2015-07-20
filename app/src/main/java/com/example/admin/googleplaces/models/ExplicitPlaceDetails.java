@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class ExplicitPlaceDetails extends PlaceDetails {
     private String name_;
-    private List<Photo> photos_;
+
 
     public  ExplicitPlaceDetails(){}
 

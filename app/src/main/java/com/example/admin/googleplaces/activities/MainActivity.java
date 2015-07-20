@@ -15,60 +15,43 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.admin.googleplaces.R;
-import com.example.admin.googleplaces.handlers.MessageHandler;
-import com.example.admin.googleplaces.interfaces.Requests;
+import com.example.admin.googleplaces.interfaces.UIactions;
 import com.example.admin.googleplaces.managers.RequestManager;
-import com.example.admin.googleplaces.models.NearbyPlaceDetails;
-import com.example.admin.googleplaces.models.Photo;
 import com.example.admin.googleplaces.models.PreviewData;
 import com.example.admin.googleplaces.models.RequestParams;
-import com.example.admin.googleplaces.requests.FetchPhotoRequest;
-import com.example.admin.googleplaces.requests.FetchPlaceSearchRequest;
-import com.example.admin.googleplaces.requests.Request;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 
-import java.net.URL;
-import java.util.List;
+public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapClickListener,UIactions {
 
 
-public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapClickListener,Requests {
-
-
-
-
+    public static ImageView imageView;
+    private final int PREVIEW_IMAGE_INDEX = 0;
     private GoogleMap map_; // Might be null if Google Play services APK is not available.
     private TextView text_;
-    public static ImageView imageView;
     private String TAG = MainActivity.class.getName();
-    RequestManager manager = new RequestManager(this);
-
-    private Button getMore_;
-
+    private RequestManager manager_ = new RequestManager(this);
+    private Button getMoreButton_;
     private String placeId_;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        text_ = (TextView) findViewById(R.id.locinfo);
-        imageView = (ImageView) findViewById(R.id.cover_image_view);
+        text_ = (TextView) findViewById(R.id.place_name);
+        imageView = (ImageView) findViewById(R.id.preview_image);
 
-        getMore_ = (Button)findViewById(R.id.more);
-        getMore_.setEnabled(false);
-        getMore_.setOnClickListener(new View.OnClickListener() {
+        getMoreButton_ = (Button)findViewById(R.id.more);
+        getMoreButton_.setEnabled(false);
+        getMoreButton_.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,GalleryActivity.class);
-                intent.putExtra("placeId",placeId_);
+                Intent intent = new Intent(MainActivity.this, GalleryActivity.class);
+                intent.putExtra(getResources().getString(R.string.place_id_key), placeId_);
                 startActivity(intent);
             }
         });
@@ -89,14 +72,14 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapCl
 
         RequestParams requestParams = new RequestParams(latLng,50,getApiKey());
 
-        manager.sendSearchRequest(requestParams);
+        manager_.sendSearchRequest(requestParams);
 
         /////////
 
        // ??? String location = Utily.getStringLocation(latLng);
-       // WebApiManager manager = new WebApiManager();
+       // WebApiManager manager_ = new WebApiManager();
         String key = getApiKey();
-        //String result = manager.getPlaceInfo(latLng, key);
+        //String result = manager_.getPlaceInfo(latLng, key);
 
 //        List<NearbyPlaceDetails> nearbyPlaceDetailses = searchRequest.getPlacesWithPhoto(searchRequest.getPlaceInfo(latLng,key));
 //        List<String> photoRefs = searchRequest.getPhotoRefsFromAllPlaces(nearbyPlaceDetailses);
@@ -144,12 +127,17 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapCl
 
 // TODO Убрать get(0)
     public void showPreview(PreviewData previewData){
-        ImageView imageView = (ImageView) this.findViewById(R.id.cover_image_view);
-        imageView.setImageBitmap(previewData.getImage_().get(0));
-        TextView name = (TextView)this.findViewById(R.id.locinfo);
+
+        if (previewData.getImages().size() != 0) {
+            ImageView imageView = (ImageView) this.findViewById(R.id.preview_image);
+            Bitmap previewImage = previewData.getImages().get(PREVIEW_IMAGE_INDEX);
+            imageView.setImageBitmap(previewImage);
+        }
+        TextView name = (TextView)this.findViewById(R.id.place_name);
         name.setText(previewData.getName());
+
         placeId_ = previewData.getPlaceId();
-        getMore_.setEnabled(true);
+        getMoreButton_.setEnabled(true);
     }
 
     private void setUpMap() {
