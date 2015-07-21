@@ -30,7 +30,7 @@ public class GalleryActivity extends ActionBarActivity implements UIactions {
         Bundle extras = getIntent().getExtras();
         String placeId = extras.getString(getResources().getString(R.string.place_id_key));
         RequestParams requestParams = new RequestParams(placeId,"AIzaSyAHi0UQFl62k5kkFgrxWoS2xlnFd8p8_So");
-        manager.sendDetailedRequest(requestParams);
+        manager.VsendDetailedRequest(requestParams);
         photos_ = new ArrayList<>();
 
     }

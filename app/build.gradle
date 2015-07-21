@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.admin.googleplaces"
-        minSdkVersion 11
+        minSdkVersion 12
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -23,5 +23,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.google.android.gms:play-services:3.1.36'
+    compile 'com.squareup.okhttp:okhttp:2.4.0'
+    compile 'com.mcxiaoke.volley:library:1.0.16'
     testCompile 'junit:junit:4.12'
 }

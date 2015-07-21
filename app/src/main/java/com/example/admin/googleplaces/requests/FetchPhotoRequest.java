@@ -7,6 +7,10 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.admin.googleplaces.models.RequestParams;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+import com.squareup.okhttp.ResponseBody;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,6 +24,8 @@ import java.security.InvalidParameterException;
  */
 public class FetchPhotoRequest {
 
+    private static final int SUCCESS_STATUS = 200;
+
     //region Keys for building query
     private static final String BASE_PHOTO_URL = "https://maps.googleapis.com/maps/api/place/photo?";
     private static final String MAX_WIDTH_KEY = "maxwidth";
@@ -31,75 +37,48 @@ public class FetchPhotoRequest {
     private static final String LOG_TAG = FetchPlaceSearchRequest.class.getSimpleName();
     private Bitmap photo_;
     private RequestParams requestParams_;
+    private OkHttpClient client_;
 
     public FetchPhotoRequest(RequestParams params){
         this.requestParams_ = params;
+        this.client_ = new OkHttpClient();
     }
 
     /**
      * Creates query for getting photo
      */
-    public URL getUrl() {
-        URL url = null;
-        try {
-            Uri builtUri = Uri.parse(BASE_PHOTO_URL).buildUpon()
-                    .appendQueryParameter(MAX_WIDTH_KEY, requestParams_.getMaxWidth())
-                    .appendQueryParameter(MAX_HEIGHT_KEY, requestParams_.getMaxHeight())
-                    .appendQueryParameter(PHOTO_REFERENCE_KEY, requestParams_.getPhotoReference())
-                    .appendQueryParameter(GOOGLE_PLACES_API_KEY, requestParams_.getApiKey())
-                    .build();
+    public String getUrl() {
+        String url = null;
+        Uri builtUri = Uri.parse(BASE_PHOTO_URL).buildUpon()
+                .appendQueryParameter(MAX_WIDTH_KEY, requestParams_.getMaxWidth())
+                .appendQueryParameter(MAX_HEIGHT_KEY, requestParams_.getMaxHeight())
+                .appendQueryParameter(PHOTO_REFERENCE_KEY, requestParams_.getPhotoReference())
+                .appendQueryParameter(GOOGLE_PLACES_API_KEY, requestParams_.getApiKey())
+                .build();
 
-            url = new URL(builtUri.toString());
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "Error", e);
-            return null;
-        }
+        url = builtUri.toString();
         return url;
     }
 
     /**
      * Sends request by special URL to get photo
-     *
-     * @param url the photo request query
-     * @return string that contains json response from server
      */
-    public Bitmap sendPhotoRequest(URL url) {
-        HttpURLConnection urlConnection = null;
-        BufferedReader reader = null;
-        String jsonResult = null;
-        Bitmap photo = null;
-
-        try {
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("GET");
-            urlConnection.connect();
-
-            // Read the input stream
-            InputStream inputStream = urlConnection.getInputStream();
-
-            if (inputStream == null) {
-                return null;
-            }
-
-            photo = BitmapFactory.decodeStream(inputStream);
-
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "Error", e);
-            return null;
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            }
-            if (reader != null) {
-                try {
-                    if (reader != null) {
-                        reader.close();
-                    }
-                } catch (final IOException e) {
-                    Log.e(LOG_TAG, "Error closing stream", e);
-                }
-            }
-        }
-        return photo;
+    public Bitmap sendRequest(String url) throws IOException {
+        Bitmap image =  run(url);
+        return image;
     }
+
+    Bitmap run(String url) throws IOException {
+        Request request = new Request.Builder().url(url).build();
+        Response response = client_.newCall(request).execute();
+        Bitmap image = null;
+        if (response.code() == SUCCESS_STATUS){
+            ResponseBody body = response.body();
+            InputStream inputStream = body.byteStream();
+            image = BitmapFactory.decodeStream(inputStream);
+        }
+        return image;
+    }
+
+
 }

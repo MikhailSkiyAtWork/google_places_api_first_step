@@ -52,7 +52,7 @@ public class MessageHandler extends Handler {
                     if (fetchedPlaces.size() != 0) {
                         previewData_.setName(fetchedPlaces.get(FIRST_ITEM).getName());
                         previewData_.setPlaceId(fetchedPlaces.get(FIRST_ITEM).getPlaceId());
-                        manager.sendPhotoRequest(fetchedPlaces.get(FIRST_ITEM));
+                        manager.VsendPhotoRequest(fetchedPlaces.get(FIRST_ITEM));
                     }
                 }
                 break;
@@ -76,7 +76,7 @@ public class MessageHandler extends Handler {
             case States.EXPLICIT_DETAILS_WAS_PARSE_OUT:
                 if (msg.obj != null) {
                     ExplicitPlaceDetails details = (ExplicitPlaceDetails) msg.obj;
-                    manager.sendPhotoRequest(details);
+                    manager.VsendPhotoRequest(details);
                 }
                 break;
         }

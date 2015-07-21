@@ -1,15 +1,19 @@
 package com.example.admin.googleplaces.requests;
 
+import android.app.DownloadManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.example.admin.googleplaces.listeners.AsyncTaskListener;
+//import com.example.admin.googleplaces.listeners.AsyncTaskListener;
 import com.example.admin.googleplaces.models.Photo;
 import com.example.admin.googleplaces.models.NearbyPlaceDetails;
 import com.example.admin.googleplaces.helpers.JsonHelper;
 import com.example.admin.googleplaces.models.RequestParams;
 import com.google.android.gms.maps.model.LatLng;
+//import com.squareup.okhttp.OkHttpClient;
+//import com.squareup.okhttp.Request;
+//import com.squareup.okhttp.Response;
 
 import org.json.JSONException;
 
@@ -28,6 +32,8 @@ import java.util.List;
  */
 public class FetchPlaceSearchRequest  {
 
+    private static final int SUCCESS_STATUS = 200;
+
     //region Keys for building query
     private static final String BASE_PLACE_SEARCH_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?";
     private static final String LOCATION_KEY = "location";
@@ -45,7 +51,7 @@ public class FetchPlaceSearchRequest  {
     private List<NearbyPlaceDetails> places_ = new ArrayList<>();
     private List<String> photoRefs_ = new ArrayList<>();
     private RequestParams requestParams_;
-
+   // private OkHttpClient client_;
 
 
 
@@ -54,6 +60,7 @@ public class FetchPlaceSearchRequest  {
 
     public FetchPlaceSearchRequest(RequestParams requestParams) {
         this.requestParams_ = requestParams;
+       // this.client_ =  new OkHttpClient();
     }
 
     /**
@@ -61,20 +68,15 @@ public class FetchPlaceSearchRequest  {
      */
     // TODO add radius as arg (such as it will posiible change radius from config)
     // TODO Check requestParams.getPoint() and others not null or empty
-    public URL getUrl() {
-        URL url = null;
-        try {
-            Uri builtUri = Uri.parse(BASE_PLACE_SEARCH_URL).buildUpon()
-                    .appendQueryParameter(LOCATION_KEY, this.requestParams_.getPoint())
-                    .appendQueryParameter(RADIUS_KEY, this.requestParams_.getRadius())
-                    .appendQueryParameter(GOOGLE_PLACES_API_KEY, this.requestParams_.getApiKey())
-                    .build();
+    public String getUrl() {
+        String url = null;
+        Uri builtUri = Uri.parse(BASE_PLACE_SEARCH_URL).buildUpon()
+                .appendQueryParameter(LOCATION_KEY, this.requestParams_.getPoint())
+                .appendQueryParameter(RADIUS_KEY, this.requestParams_.getRadius())
+                .appendQueryParameter(GOOGLE_PLACES_API_KEY, this.requestParams_.getApiKey())
+                .build();
 
-            url = new URL(builtUri.toString());
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "Error", e);
-            return null;
-        }
+        url = builtUri.toString();
         return url;
     }
 
@@ -84,53 +86,23 @@ public class FetchPlaceSearchRequest  {
      * @param url the search query
      * @return string that contains json response from server
      */
-    public String sendRequest(URL url) {
-        HttpURLConnection urlConnection = null;
-        BufferedReader reader = null;
-        String jsonResult = null;
+//    public String sendRequest(String url) throws IOException {
+//        String response =  run(url);
+//        return response;
+//    }
 
-        try {
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("GET");
-            urlConnection.connect();
-
-            int responseCode = urlConnection.getResponseCode();
-
-            // Read the input stream into a String
-            InputStream inputStream = urlConnection.getInputStream();
-            StringBuffer buffer = new StringBuffer();
-            if (inputStream == null) {
-                return null;
-            }
-
-            reader = new BufferedReader(new InputStreamReader(inputStream));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                buffer.append(line + "\n");
-            }
-
-            if (buffer.length() == 0) {
-                return null;
-            }
-            jsonResult = buffer.toString();
-
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "Error", e);
-            return null;
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            }
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (final IOException e) {
-                    Log.e(LOG_TAG, "Error closing stream", e);
-                }
-            }
-        }
-        return jsonResult;
-    }
+    /**
+     * Sends request using OkHttp library
+     */
+//    String run(String url) throws IOException {
+//        Request request = new Request.Builder().url(url).build();
+//        String responseString = null;
+//        Response response = client_.newCall(request).execute();
+//        if (response.code() == SUCCESS_STATUS){
+//            responseString = response.body().string();
+//        }
+//        return responseString;
+//    }
 
     /**
      * Returns All nearby places and some details about such places

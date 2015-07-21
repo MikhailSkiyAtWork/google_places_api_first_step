@@ -19,6 +19,7 @@ import com.example.admin.googleplaces.interfaces.UIactions;
 import com.example.admin.googleplaces.managers.RequestManager;
 import com.example.admin.googleplaces.models.PreviewData;
 import com.example.admin.googleplaces.models.RequestParams;
+import com.example.admin.googleplaces.requests.FetchPlaceDetailsRequest;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -66,36 +67,9 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapCl
     public void onMapClick(LatLng latLng) {
         String point = latLng.toString();
 
-        // Show info about selected point
-      //  text_.setText(point);
         map_.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-
         RequestParams requestParams = new RequestParams(latLng,50,getApiKey());
-
-        manager_.sendSearchRequest(requestParams);
-
-        /////////
-
-       // ??? String location = Utily.getStringLocation(latLng);
-       // WebApiManager manager_ = new WebApiManager();
-        String key = getApiKey();
-        //String result = manager_.getPlaceInfo(latLng, key);
-
-//        List<NearbyPlaceDetails> nearbyPlaceDetailses = searchRequest.getPlacesWithPhoto(searchRequest.getPlaceInfo(latLng,key));
-//        List<String> photoRefs = searchRequest.getPhotoRefsFromAllPlaces(nearbyPlaceDetailses);
-//
-//        FetchPhotoRequest photoRequest = new FetchPhotoRequest();
-//        Bitmap image = photoRequest.getPhoto(Integer.toString(60),Integer.toString(60),photoRefs.get(0),key);
-//
-//        ImageView imageView = (ImageView)this.findViewById(R.id.cover_image_view);
-//        imageView.setImageBitmap(image);
-
-        // TODO SET PREVIEW HERE!!!
-//        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.mipmap.chehov);
-//        map_.addMarker(new MarkerOptions().position(new LatLng(47.2092003, 38.9334364))
-//                .title("Marker")
-//                .icon());
-
+        manager_.VsendSearchRequest(requestParams);
     }
 
     @Override

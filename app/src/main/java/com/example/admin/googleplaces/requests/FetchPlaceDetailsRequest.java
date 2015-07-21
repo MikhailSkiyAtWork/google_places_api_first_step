@@ -12,6 +12,9 @@ import com.example.admin.googleplaces.models.ExplicitPlaceDetails;
 import com.example.admin.googleplaces.helpers.JsonHelper;
 import com.example.admin.googleplaces.models.Photo;
 import com.example.admin.googleplaces.models.RequestParams;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 import org.json.JSONException;
 
@@ -29,6 +32,8 @@ import java.util.List;
  */
 public class FetchPlaceDetailsRequest  {
 
+    private static final int SUCCESS_STATUS = 200;
+
     //region Keys for Place Details building query
     private static final String BASE_PLACE_DETAILS_URL = "https://maps.googleapis.com/maps/api/place/details/json?";
     private static final String PLACE_ID_KEY = "placeid";
@@ -39,10 +44,11 @@ public class FetchPlaceDetailsRequest  {
     private ExplicitPlaceDetails details_;
     private List<Photo> photoRefs = new ArrayList<Photo>();
     private RequestParams requestParams_;
-
+    private OkHttpClient client_;
 
     public FetchPlaceDetailsRequest(RequestParams params){
         this.requestParams_ = params;
+        this.client_ = new OkHttpClient();
     }
 
     public String getResponse() {
@@ -54,74 +60,36 @@ public class FetchPlaceDetailsRequest  {
     /**
      * Creates query for place details request by placeId and Google Places API KEY
      */
-    public URL getUrl() {
-        URL url = null;
-        try {
-            Uri placeDetailsUri = Uri.parse(BASE_PLACE_DETAILS_URL).buildUpon()
-                    .appendQueryParameter(PLACE_ID_KEY, requestParams_.getPlaceId())
-                    .appendQueryParameter(GOOGLE_PLACES_API_KEY, requestParams_.getApiKey())
-                    .build();
+    public String getUrl() {
+        String url = null;
+        Uri placeDetailsUri = Uri.parse(BASE_PLACE_DETAILS_URL).buildUpon()
+                .appendQueryParameter(PLACE_ID_KEY, requestParams_.getPlaceId())
+                .appendQueryParameter(GOOGLE_PLACES_API_KEY, requestParams_.getApiKey())
+                .build();
 
-            url = new URL(placeDetailsUri.toString());
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "Error", e);
-            return null;
-        }
+        url = placeDetailsUri.toString();
         return url;
     }
 
     /**
      * Sends Place Details request by placeDetailsUrl
      *
-     * @param placeDetailsUrl special Url that contained the placeId and Google Places API
+     * @param url special Url that contained the placeId and Google Places API
      * @return string that contains json response from server
      */
-    public  String sendRequest(URL placeDetailsUrl) {
-        // TODO sendRequest is a similar like sendSearchRequest
-        // TODO So is good idea to create such method as a separate method???
-        HttpURLConnection urlConnection = null;
-        BufferedReader reader = null;
-        String jsonResult = null;
+    public String sendRequest(String url) throws IOException {
+        String response =  run(url);
+        return response;
+    }
 
-        try {
-            urlConnection = (HttpURLConnection) placeDetailsUrl.openConnection();
-            urlConnection.setRequestMethod("GET");
-            urlConnection.connect();
-
-            // Read the input stream into a String
-            InputStream inputStream = urlConnection.getInputStream();
-            StringBuffer buffer = new StringBuffer();
-            if (inputStream == null) {
-                return null;
-            }
-
-            reader = new BufferedReader(new InputStreamReader(inputStream));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                buffer.append(line + "\n");
-            }
-
-            if (buffer.length() == 0) {
-                return null;
-            }
-            jsonResult = buffer.toString();
-
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "Error", e);
-            return null;
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            }
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (final IOException e) {
-                    Log.e(LOG_TAG, "Error closing stream", e);
-                }
-            }
+    String run(String url) throws IOException {
+        Request request = new Request.Builder().url(url).build();
+        String responseString = null;
+        Response response = client_.newCall(request).execute();
+        if (response.code() == SUCCESS_STATUS){
+            responseString = response.body().string();
         }
-        return jsonResult;
+        return responseString;
     }
 
     public static ExplicitPlaceDetails parsePlaceDetailsResponse(String jsonResponse) throws JSONException {
