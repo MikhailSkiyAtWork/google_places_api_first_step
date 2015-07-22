@@ -8,6 +8,7 @@ package com.example.admin.googleplaces.requests;
 import android.net.Uri;
 import android.util.Log;
 
+import com.example.admin.googleplaces.helpers.States;
 import com.example.admin.googleplaces.models.ExplicitPlaceDetails;
 import com.example.admin.googleplaces.helpers.JsonHelper;
 import com.example.admin.googleplaces.models.Photo;
@@ -30,32 +31,28 @@ import java.util.List;
 /**
  * Contain fields and methods which are necessary for sending Place Details request
  */
-public class FetchPlaceDetailsRequest  {
+public class FetchPlaceDetailsRequest extends GeneralRequest {
 
-    private static final int SUCCESS_STATUS = 200;
+    private static final String DETAILS_REQUEST_TAG = "detailed_request";
 
     //region Keys for Place Details building query
     private static final String BASE_PLACE_DETAILS_URL = "https://maps.googleapis.com/maps/api/place/details/json?";
     private static final String PLACE_ID_KEY = "placeid";
-    protected static final String GOOGLE_PLACES_API_KEY = "key";
+    private static final String GOOGLE_PLACES_API_KEY = "key";
     //endregion
 
-    private String response_;
-    private ExplicitPlaceDetails details_;
     private List<Photo> photoRefs = new ArrayList<Photo>();
     private RequestParams requestParams_;
-    private OkHttpClient client_;
+
+    private static final String LOG_TAG = FetchPlaceSearchRequest.class.getSimpleName();
 
     public FetchPlaceDetailsRequest(RequestParams params){
         this.requestParams_ = params;
-        this.client_ = new OkHttpClient();
     }
 
-    public String getResponse() {
-        return this.response_;
+    public String getTag(){
+        return this.DETAILS_REQUEST_TAG;
     }
-
-    private static final String LOG_TAG = FetchPlaceSearchRequest.class.getSimpleName();
 
     /**
      * Creates query for place details request by placeId and Google Places API KEY
@@ -71,36 +68,14 @@ public class FetchPlaceDetailsRequest  {
         return url;
     }
 
-    /**
-     * Sends Place Details request by placeDetailsUrl
-     *
-     * @param url special Url that contained the placeId and Google Places API
-     * @return string that contains json response from server
-     */
-    public String sendRequest(String url) throws IOException {
-        String response =  run(url);
-        return response;
-    }
-
-    String run(String url) throws IOException {
-        Request request = new Request.Builder().url(url).build();
-        String responseString = null;
-        Response response = client_.newCall(request).execute();
-        if (response.code() == SUCCESS_STATUS){
-            responseString = response.body().string();
-        }
-        return responseString;
-    }
-
     public static ExplicitPlaceDetails parsePlaceDetailsResponse(String jsonResponse) throws JSONException {
         ExplicitPlaceDetails explicitPlaceDetails = JsonHelper.getPlaceDetailsFromJson(jsonResponse);
         return explicitPlaceDetails;
     }
 
-
-
-
-
+    public int getStatus(){
+        return States.EXPLICIT_DETAILS_FETCHED;
+    }
 }
 
 

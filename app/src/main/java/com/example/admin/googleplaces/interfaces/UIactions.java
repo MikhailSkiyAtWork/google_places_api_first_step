@@ -1,5 +1,7 @@
 package com.example.admin.googleplaces.interfaces;
 
+import android.content.Context;
+
 import com.example.admin.googleplaces.models.NearbyPlaceDetails;
 import com.example.admin.googleplaces.models.PreviewData;
 import com.example.admin.googleplaces.models.RequestParams;
@@ -10,7 +12,6 @@ import java.util.List;
  * Created by Mikhail Valuyskiy on 17.07.2015.
  */
 public interface UIactions {
-  //  public void sendSearchRequest(RequestParams requestParams);
-  //  public void sendPhotoRequest (List<NearbyPlaceDetails> places);
-    public void showPreview(PreviewData previewData);
+    void showPreview(PreviewData previewData);
+    Context getContextForClient();
 }

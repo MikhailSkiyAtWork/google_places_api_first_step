@@ -46,13 +46,14 @@ public class MessageHandler extends Handler {
                 }
                 break;
 
+            // Search response was parse out so send one photo request for preview
             case States.SEARCH_RESPONSE_WAS_PARSE_OUT:
                 if (msg.obj != null) {
                     List<NearbyPlaceDetails> fetchedPlaces = (List<NearbyPlaceDetails>) msg.obj;
                     if (fetchedPlaces.size() != 0) {
                         previewData_.setName(fetchedPlaces.get(FIRST_ITEM).getName());
                         previewData_.setPlaceId(fetchedPlaces.get(FIRST_ITEM).getPlaceId());
-                        manager.VsendPhotoRequest(fetchedPlaces.get(FIRST_ITEM));
+                        manager.VsendPhotoRequest(fetchedPlaces.get(FIRST_ITEM).getPhotos().get(FIRST_ITEM));
                     }
                 }
                 break;
@@ -76,8 +77,13 @@ public class MessageHandler extends Handler {
             case States.EXPLICIT_DETAILS_WAS_PARSE_OUT:
                 if (msg.obj != null) {
                     ExplicitPlaceDetails details = (ExplicitPlaceDetails) msg.obj;
-                    manager.VsendPhotoRequest(details);
+                    for (int i = 0; i < details.getPhotos().size(); i++) {
+                        manager.VsendPhotoRequest(details.getPhotos().get(i));
+                    }
                 }
+                break;
+
+            default:
                 break;
         }
     }

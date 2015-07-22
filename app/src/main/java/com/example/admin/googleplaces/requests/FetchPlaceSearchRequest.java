@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 //import com.example.admin.googleplaces.listeners.AsyncTaskListener;
+import com.example.admin.googleplaces.helpers.States;
 import com.example.admin.googleplaces.models.Photo;
 import com.example.admin.googleplaces.models.NearbyPlaceDetails;
 import com.example.admin.googleplaces.helpers.JsonHelper;
@@ -30,9 +31,9 @@ import java.util.List;
 /**
  * Created by Mikhail Valuyskiy on 06.07.2015.
  */
-public class FetchPlaceSearchRequest  {
+public class FetchPlaceSearchRequest extends GeneralRequest {
 
-    private static final int SUCCESS_STATUS = 200;
+    private static final String SEARCH_REQUEST_TAG = "search_request";
 
     //region Keys for building query
     private static final String BASE_PLACE_SEARCH_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?";
@@ -47,26 +48,27 @@ public class FetchPlaceSearchRequest  {
     private static boolean SENSOR_VALUE = false;
     //endregion
 
-    private String response_;
     private List<NearbyPlaceDetails> places_ = new ArrayList<>();
     private List<String> photoRefs_ = new ArrayList<>();
     private RequestParams requestParams_;
-   // private OkHttpClient client_;
-
-
 
     private static final String LOG_TAG = FetchPlaceSearchRequest.class.getSimpleName();
 
-
     public FetchPlaceSearchRequest(RequestParams requestParams) {
         this.requestParams_ = requestParams;
-       // this.client_ =  new OkHttpClient();
+    }
+
+    public int getStatus() {
+        return States.NEARBY_PLACES_WAS_FOUND;
+    }
+
+    public String getTag() {
+        return this.SEARCH_REQUEST_TAG;
     }
 
     /**
      * Creates query for search request by LatLng and Google Places API KEY
      */
-    // TODO add radius as arg (such as it will posiible change radius from config)
     // TODO Check requestParams.getPoint() and others not null or empty
     public String getUrl() {
         String url = null;
@@ -79,30 +81,6 @@ public class FetchPlaceSearchRequest  {
         url = builtUri.toString();
         return url;
     }
-
-    /**
-     * Sends search request by special URL
-     *
-     * @param url the search query
-     * @return string that contains json response from server
-     */
-//    public String sendRequest(String url) throws IOException {
-//        String response =  run(url);
-//        return response;
-//    }
-
-    /**
-     * Sends request using OkHttp library
-     */
-//    String run(String url) throws IOException {
-//        Request request = new Request.Builder().url(url).build();
-//        String responseString = null;
-//        Response response = client_.newCall(request).execute();
-//        if (response.code() == SUCCESS_STATUS){
-//            responseString = response.body().string();
-//        }
-//        return responseString;
-//    }
 
     /**
      * Returns All nearby places and some details about such places

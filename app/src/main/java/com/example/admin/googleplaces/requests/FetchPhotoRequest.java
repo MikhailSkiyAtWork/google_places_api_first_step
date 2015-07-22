@@ -24,8 +24,6 @@ import java.security.InvalidParameterException;
  */
 public class FetchPhotoRequest {
 
-    private static final int SUCCESS_STATUS = 200;
-
     //region Keys for building query
     private static final String BASE_PHOTO_URL = "https://maps.googleapis.com/maps/api/place/photo?";
     private static final String MAX_WIDTH_KEY = "maxwidth";
@@ -34,14 +32,10 @@ public class FetchPhotoRequest {
     private static final String GOOGLE_PLACES_API_KEY = "key";
     //endregion
 
-    private static final String LOG_TAG = FetchPlaceSearchRequest.class.getSimpleName();
-    private Bitmap photo_;
     private RequestParams requestParams_;
-    private OkHttpClient client_;
 
     public FetchPhotoRequest(RequestParams params){
         this.requestParams_ = params;
-        this.client_ = new OkHttpClient();
     }
 
     /**
@@ -59,26 +53,4 @@ public class FetchPhotoRequest {
         url = builtUri.toString();
         return url;
     }
-
-    /**
-     * Sends request by special URL to get photo
-     */
-    public Bitmap sendRequest(String url) throws IOException {
-        Bitmap image =  run(url);
-        return image;
-    }
-
-    Bitmap run(String url) throws IOException {
-        Request request = new Request.Builder().url(url).build();
-        Response response = client_.newCall(request).execute();
-        Bitmap image = null;
-        if (response.code() == SUCCESS_STATUS){
-            ResponseBody body = response.body();
-            InputStream inputStream = body.byteStream();
-            image = BitmapFactory.decodeStream(inputStream);
-        }
-        return image;
-    }
-
-
 }

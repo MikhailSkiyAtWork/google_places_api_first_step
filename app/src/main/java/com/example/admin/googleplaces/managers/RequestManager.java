@@ -1,13 +1,16 @@
 package com.example.admin.googleplaces.managers;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import com.android.volley.Cache;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.admin.googleplaces.handlers.MessageHandler;
+import com.example.admin.googleplaces.helpers.Utily;
 import com.example.admin.googleplaces.interfaces.UIactions;
 import com.example.admin.googleplaces.models.ExplicitPlaceDetails;
 import com.example.admin.googleplaces.models.NearbyPlaceDetails;
@@ -24,9 +27,10 @@ import com.example.admin.googleplaces.helpers.States;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import com.android.volley.Request.Method;
-import java.net.URL;
+import com.example.admin.googleplaces.requests.GeneralRequest;
+
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +39,7 @@ import java.util.List;
  */
 public class RequestManager {
 
-    private  MessageHandler handler_ = new MessageHandler(this);
+    private MessageHandler handler_ = new MessageHandler(this);
     private UIactions clientActivity_;
 
     private ExplicitPlaceDetails details_;
@@ -74,143 +78,109 @@ public class RequestManager {
         handler_.sendMessage(handler_.obtainMessage(States.EXPLICIT_DETAILS_WAS_PARSE_OUT, details));
     }
 
-    public  void sendDetailedRequest(final RequestParams requestParams){
-        Thread background = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                FetchPlaceDetailsRequest searchRequest = new FetchPlaceDetailsRequest(requestParams);
-                String response = null;
-                String url = searchRequest.getUrl();
-                try {
-                     response = searchRequest.sendRequest(url);
-                } catch (IOException e){
-                    Log.e(LOG_TAG,"Error",e);
-                }
-                handler_.sendMessage(handler_.obtainMessage(States.EXPLICIT_DETAILS_FETCHED,response));
+
+    /**
+     * Sends request (Search or Details) depends on the instance of request was sent
+     * @param request type of request (can be either PlaceSearchRequest or PlaceDetailsRequst)
+     */
+    public void sendRequest(GeneralRequest request) {
+
+        String tag = request.getTag();
+        // Special url for request
+        String url = request.getUrl();
+        // Status for sending into MessageHandler
+        final int status = request.getStatus();
+
+        // Check if there is saved data in the cache
+        // If so, there is no need to send same request, just take it from cache
+        // Otherwise, send request
+        String data = getDataFromCache(url);
+        if (data != null) {
+            handler_.sendMessage(handler_.obtainMessage(status, data));
+        } else {
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Method.GET, url,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            String responseString = response.toString();
+                            handler_.sendMessage(handler_.obtainMessage(status, responseString));
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e(LOG_TAG, "Error", error);
+                        }
+                    });
+
+            AppController.getInstance().addToRequestQueue(jsonObjectRequest, tag);
+        }
+    }
+
+    private Cache.Entry retrieveDataFromCache(String url) {
+        Cache cache = AppController.getInstance().getRequestQueue().getCache();
+        Cache.Entry entry = cache.get(url);
+        return entry;
+    }
+
+    private String getDataFromCache(String url){
+        Cache.Entry retrievedData = retrieveDataFromCache(url);
+        String data = null;
+        if (retrievedData!= null) {
+            try {
+                data = new String(retrievedData.data, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
             }
-        });
-        background.start();
+        }
+        return data;
     }
 
-    public void VsendDetailedRequest(RequestParams requestParams){
-        String tag_search_request = "detailed_request";
-        FetchPlaceDetailsRequest detailsRequest = new FetchPlaceDetailsRequest(requestParams);
-        String url = detailsRequest.getUrl();
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Method.GET, url,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        String responseString = response.toString();
-                        handler_.sendMessage(handler_.obtainMessage(States.EXPLICIT_DETAILS_FETCHED, responseString));
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e(LOG_TAG, "Error", error);
-                    }
-                });
-
-        AppController.getInstance().addToRequestQueue(jsonObjectRequest, tag_search_request);
-
+   private Bitmap getPhotoFromCache(String url){
+       Cache.Entry retrievedData = retrieveDataFromCache(url);
+       Bitmap photoFromCache = null;
+       if (retrievedData != null) {
+           photoFromCache = BitmapFactory.decodeByteArray(retrievedData.data, 0, retrievedData.data.length);
+       }
+       return photoFromCache;
     }
-
-//    public void sendSearchRequest(final RequestParams requestParams) {
-//        Thread background = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                FetchPlaceSearchRequest searchRequest = new FetchPlaceSearchRequest(requestParams);
-//                String response = null;
-//                String url = searchRequest.getUrl();
-//                try {
-//                    response = searchRequest.sendRequest(url);
-//                } catch (IOException e) {
-//                    Log.e(LOG_TAG, "Error", e);
-//                }
-//                handler_.sendMessage(handler_.obtainMessage(States.NEARBY_PLACES_WAS_FOUND, response));
-//            }
-//        });
-//        background.start();
-//    }
-
-    public void VsendSearchRequest(final RequestParams requestParams) {
-        String tag_search_request = "search_request";
-
-        FetchPlaceSearchRequest searchRequest = new FetchPlaceSearchRequest(requestParams);
-        String url = searchRequest.getUrl();
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Method.GET, url,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        String responseString = response.toString();
-                        handler_.sendMessage(handler_.obtainMessage(States.NEARBY_PLACES_WAS_FOUND, responseString));
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e(LOG_TAG, "Error", error);
-                    }
-                });
-
-        AppController.getInstance().addToRequestQueue(jsonObjectRequest, tag_search_request);
-    }
-
 
     /**
      * Sends photo request and gets list of photos
      */
-    public void sendPhotoRequest(PlaceDetails place) {
-        for (int i = 0; i < place.getPhotos().size(); i++) {
-            final RequestParams requestParams = new RequestParams(60, 60, place.getPhotos().get(i).getPhotoReference(), "AIzaSyAHi0UQFl62k5kkFgrxWoS2xlnFd8p8_So");
-
-            Thread back = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    ArrayList<Bitmap> photos = new ArrayList<>();
-                    FetchPhotoRequest photoRequest = new FetchPhotoRequest(requestParams);
-                    String url = photoRequest.getUrl();
-                    Bitmap photo = null;
-                    try {
-                         photo = photoRequest.sendRequest(url);
-                    }catch (IOException e){
-                        Log.e(LOG_TAG,"Error",e);
-                    }
-                    if (photo != null) {
-                        photos.add(photo);
-                        handler_.sendMessage(handler_.obtainMessage(States.PHOTO_DOWNLOADED, photos));
-                    }
-                }
-            });
-            back.start();
-        }
-    }
-
-    public void VsendPhotoRequest(PlaceDetails place){
+    public void VsendPhotoRequest(Photo photo) {
         ImageLoader imageLoader = AppController.getInstance().getImageLoader();
-        for (int i = 0; i < place.getPhotos().size(); i++) {
-            final RequestParams requestParams = new RequestParams(60, 60, place.getPhotos().get(i).getPhotoReference(), "AIzaSyAHi0UQFl62k5kkFgrxWoS2xlnFd8p8_So");
+
+            final RequestParams requestParams = new RequestParams(60, 60, photo.getPhotoReference(), Utily.getApiKey(this.clientActivity_.getContextForClient()));
 
             final FetchPhotoRequest photoRequest = new FetchPhotoRequest(requestParams);
             String url = photoRequest.getUrl();
-            imageLoader.get(url, new ImageLoader.ImageListener() {
-                @Override
-                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                    if (response.getBitmap() != null){
-                        ArrayList<Bitmap> photos = new ArrayList<>();
-                        photos.add(response.getBitmap());
-                        handler_.sendMessage(handler_.obtainMessage(States.PHOTO_DOWNLOADED, photos));
+
+           final ArrayList<Bitmap> photos = new ArrayList<>();
+
+            Bitmap photoFromCache = getPhotoFromCache(url);
+            if (photoFromCache != null) {
+                photos.add(photoFromCache);
+                handler_.sendMessage(handler_.obtainMessage(States.PHOTO_DOWNLOADED, photos));
+            } else {
+
+                imageLoader.get(url, new ImageLoader.ImageListener() {
+                    @Override
+                    public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                        if (response.getBitmap() != null) {
+                            photos.add(response.getBitmap());
+                            handler_.sendMessage(handler_.obtainMessage(States.PHOTO_DOWNLOADED, photos));
+                        }
                     }
-                }
 
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.e(LOG_TAG, "Error", error);
-                }
-            });
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(LOG_TAG, "Error", error);
+                    }
+                });
 
-        }
+            }
+
     }
 
     public void updatePreview(PreviewData previewData){

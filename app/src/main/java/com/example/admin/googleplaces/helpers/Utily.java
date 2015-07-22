@@ -4,8 +4,13 @@ package com.example.admin.googleplaces.helpers;
  * Created by Mikhail Valuyskiy on 06.07.2015.
  */
 
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.util.Log;
 
+import com.example.admin.googleplaces.interfaces.UIactions;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
@@ -45,4 +50,19 @@ public class Utily {
         }
         return iconUrl;
     }
+
+    public static String getApiKey(Context context) {
+        String placesApiKey = "";
+        try {
+            ApplicationInfo info = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+            Bundle bundle = info.metaData;
+            placesApiKey = bundle.getString("com.google.android.maps.v2.API_KEY");
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(context.getApplicationInfo().className, "Failed to load meta-data, NameNotFound: " + e.getMessage());
+        } catch (NullPointerException e) {
+            Log.e(context.getApplicationInfo().className, "Failed to load meta-data, NullPointer: " + e.getMessage());
+        }
+        return placesApiKey;
+    }
+
 }

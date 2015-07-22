@@ -26,7 +26,6 @@ public class PhotoAdapter extends BaseAdapter {
 
     private static class ViewHolder {
         ImageView image_;
-
     }
 
     public PhotoAdapter(Context context, List<Bitmap> photos) {
@@ -35,35 +34,34 @@ public class PhotoAdapter extends BaseAdapter {
     }
 
     @Override
-    public int getCount(){
+    public int getCount() {
         return this.photos_.size();
     }
 
     @Override
-    public Bitmap getItem(int arg0){
+    public Bitmap getItem(int arg0) {
         return photos_.get(arg0);
     }
 
     @Override
-    public long getItemId(int arg0){
+    public long getItemId(int arg0) {
         return arg0;
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent){
+    public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
 
-        if (convertView == null){
+        if (convertView == null) {
             convertView = LayoutInflater.from(context_).inflate(R.layout.grid_item, parent, false);
             viewHolder = new ViewHolder();
-
-            viewHolder.image_ = (ImageView)convertView.findViewById(R.id.imagepart);
+            viewHolder.image_ = (ImageView) convertView.findViewById(R.id.imagepart);
             convertView.setTag(viewHolder);
         } else {
-            viewHolder = (ViewHolder)convertView.getTag();
+            viewHolder = (ViewHolder) convertView.getTag();
         }
-
         viewHolder.image_.setImageBitmap(photos_.get(position));
+
         return convertView;
     }
 

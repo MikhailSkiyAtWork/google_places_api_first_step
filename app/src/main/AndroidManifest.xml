@@ -26,7 +26,7 @@
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyAHi0UQFl62k5kkFgrxWoS2xlnFd8p8_So" />
+            android:value="AIzaSyCof_5uiMNy4I-TNebWFKrjntoy-lRL3Ws" />
 
         <activity
             android:name=".activities.GalleryActivity"

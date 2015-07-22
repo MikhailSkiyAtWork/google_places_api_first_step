@@ -1,5 +1,6 @@
 package com.example.admin.googleplaces.activities;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -9,10 +10,12 @@ import android.widget.GridView;
 
 import com.example.admin.googleplaces.R;
 import com.example.admin.googleplaces.adapters.PhotoAdapter;
+import com.example.admin.googleplaces.helpers.Utily;
 import com.example.admin.googleplaces.interfaces.UIactions;
 import com.example.admin.googleplaces.managers.RequestManager;
 import com.example.admin.googleplaces.models.PreviewData;
 import com.example.admin.googleplaces.models.RequestParams;
+import com.example.admin.googleplaces.requests.FetchPlaceDetailsRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,11 +32,17 @@ public class GalleryActivity extends ActionBarActivity implements UIactions {
 
         Bundle extras = getIntent().getExtras();
         String placeId = extras.getString(getResources().getString(R.string.place_id_key));
-        RequestParams requestParams = new RequestParams(placeId,"AIzaSyAHi0UQFl62k5kkFgrxWoS2xlnFd8p8_So");
-        manager.VsendDetailedRequest(requestParams);
+        RequestParams requestParams = new RequestParams(placeId, Utily.getApiKey(this));
+        FetchPlaceDetailsRequest detailsRequest = new FetchPlaceDetailsRequest(requestParams);
+        manager.sendRequest(detailsRequest);
         photos_ = new ArrayList<>();
-
     }
+
+    public Context getContextForClient(){
+        return this.getApplicationContext();
+    }
+
+
 
     public void showPreview(PreviewData previewData) {
         for (int i = 0; i < previewData.getImages().size(); i++) {

@@ -1,12 +1,10 @@
 package com.example.admin.googleplaces.activities;
 
+import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,11 +13,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.admin.googleplaces.R;
+import com.example.admin.googleplaces.helpers.Utily;
 import com.example.admin.googleplaces.interfaces.UIactions;
 import com.example.admin.googleplaces.managers.RequestManager;
 import com.example.admin.googleplaces.models.PreviewData;
 import com.example.admin.googleplaces.models.RequestParams;
-import com.example.admin.googleplaces.requests.FetchPlaceDetailsRequest;
+import com.example.admin.googleplaces.requests.FetchPlaceSearchRequest;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -27,7 +26,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
 
-public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapClickListener,UIactions {
+public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapClickListener, UIactions {
 
 
     public static ImageView imageView;
@@ -36,7 +35,7 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapCl
     private TextView text_;
     private String TAG = MainActivity.class.getName();
     private RequestManager manager_ = new RequestManager(this);
-    private Button getMoreButton_;
+    private Button showMoreButton;
     private String placeId_;
 
     @Override
@@ -46,9 +45,9 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapCl
         text_ = (TextView) findViewById(R.id.place_name);
         imageView = (ImageView) findViewById(R.id.preview_image);
 
-        getMoreButton_ = (Button)findViewById(R.id.more);
-        getMoreButton_.setEnabled(false);
-        getMoreButton_.setOnClickListener(new View.OnClickListener() {
+        showMoreButton = (Button) findViewById(R.id.more);
+        showMoreButton.setEnabled(false);
+        showMoreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, GalleryActivity.class);
@@ -68,8 +67,10 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapCl
         String point = latLng.toString();
 
         map_.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-        RequestParams requestParams = new RequestParams(latLng,50,getApiKey());
-        manager_.VsendSearchRequest(requestParams);
+        RequestParams requestParams = new RequestParams(latLng, 50, Utily.getApiKey(this));
+        FetchPlaceSearchRequest searchRequest = new FetchPlaceSearchRequest(requestParams);
+        manager_.sendRequest(searchRequest);
+        // manager_.VsendSearchRequest(requestParams);
     }
 
     @Override
@@ -92,33 +93,21 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapCl
         }
     }
 
-//    public getDetails(){
-//        SomeManager.sendSearchRequest(RequestParams requestParams);
-//    }
-
-
-
-
-// TODO Убрать get(0)
-    public void showPreview(PreviewData previewData){
+    public void showPreview(PreviewData previewData) {
 
         if (previewData.getImages().size() != 0) {
             ImageView imageView = (ImageView) this.findViewById(R.id.preview_image);
             Bitmap previewImage = previewData.getImages().get(PREVIEW_IMAGE_INDEX);
             imageView.setImageBitmap(previewImage);
         }
-        TextView name = (TextView)this.findViewById(R.id.place_name);
+        TextView name = (TextView) this.findViewById(R.id.place_name);
         name.setText(previewData.getName());
-
         placeId_ = previewData.getPlaceId();
-        getMoreButton_.setEnabled(true);
+        showMoreButton.setEnabled(true);
     }
 
-    private void setUpMap() {
-        CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(47.2092003, 38.9334364));
-        CameraUpdate zoom = CameraUpdateFactory.zoomTo(14);
-        map_.moveCamera(center);
-        map_.animateCamera(zoom);
+    public Context getContextForClient(){
+        return getApplicationContext();
     }
 
     @Override
@@ -136,17 +125,10 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapCl
         return super.onOptionsItemSelected(item);
     }
 
-    public String getApiKey() {
-        String placesApiKey = "";
-        try {
-            ApplicationInfo info = getPackageManager().getApplicationInfo(this.getPackageName(), PackageManager.GET_META_DATA);
-            Bundle bundle = info.metaData;
-            placesApiKey = bundle.getString("com.google.android.maps.v2.API_KEY");
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e(TAG, "Failed to load meta-data, NameNotFound: " + e.getMessage());
-        } catch (NullPointerException e) {
-            Log.e(TAG, "Failed to load meta-data, NullPointer: " + e.getMessage());
-        }
-        return placesApiKey;
+    private void setUpMap() {
+        CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(47.2092003, 38.9334364));
+        CameraUpdate zoom = CameraUpdateFactory.zoomTo(14);
+        map_.moveCamera(center);
+        map_.animateCamera(zoom);
     }
 }
