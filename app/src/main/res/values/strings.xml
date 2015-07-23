@@ -9,6 +9,9 @@
     <string name="title_activity_gallery">GalleryActivity</string>
 
     <string name="place_id_key">place_id</string>
+    <string name="title_activity_details">DetailsActivity</string>
 
+    <string name="lorem_ipsum">some_text</string>
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
 
 </resources>

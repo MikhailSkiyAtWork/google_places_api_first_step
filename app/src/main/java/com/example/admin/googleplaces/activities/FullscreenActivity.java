@@ -2,13 +2,16 @@ package com.example.admin.googleplaces.activities;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewParent;
 import android.widget.GridView;
 
 import com.example.admin.googleplaces.R;
+import com.example.admin.googleplaces.adapters.FullScreenImageAdapter;
 import com.example.admin.googleplaces.adapters.PhotoAdapter;
 import com.example.admin.googleplaces.helpers.Utily;
 import com.example.admin.googleplaces.interfaces.UIactions;
@@ -20,44 +23,36 @@ import com.example.admin.googleplaces.requests.FetchPlaceDetailsRequest;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GalleryActivity extends ActionBarActivity implements UIactions {
+public class FullscreenActivity extends ActionBarActivity implements UIactions {
 
-   private RequestManager manager_ = new RequestManager(this);
-   private  List<Bitmap> photos_;
-    private String placeId_;
+    private ViewPager viewPager_;
+    private ArrayList<Bitmap> photos_;
+    private RequestManager manager_ = new RequestManager(this);
+    private int position_;
+    private FullScreenImageAdapter adapter_;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_gallery);
+        setContentView(R.layout.activity_fullscreen);
+
+        viewPager_ = (ViewPager)findViewById(R.id.pager);
 
         Bundle extras = getIntent().getExtras();
-        placeId_ = extras.getString(getResources().getString(R.string.place_id_key));
-        RequestParams requestParams = new RequestParams(placeId_, Utily.getApiKey(this));
+        String placeId = extras.getString(getResources().getString(R.string.place_id_key));
+        position_ = extras.getInt("position");
+        RequestParams requestParams = new RequestParams(placeId, Utily.getApiKey(this));
         FetchPlaceDetailsRequest detailsRequest = new FetchPlaceDetailsRequest(requestParams);
         manager_.sendRequest(detailsRequest);
         photos_ = new ArrayList<>();
-    }
-
-    public Context getContextForClient(){
-        return this.getApplicationContext();
-    }
 
 
-    public void showPreview(PreviewData previewData) {
-        for (int i = 0; i < previewData.getImages().size(); i++) {
-            photos_.add(previewData.getImages().get(i));
-        }
-        GridView gridView = (GridView) findViewById(R.id.gridview);
-        PhotoAdapter adapter = new PhotoAdapter(this, photos_,placeId_);
-        gridView.setAdapter(adapter);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_gallery, menu);
-
+        getMenuInflater().inflate(R.menu.menu_fullscreen, menu);
         return true;
     }
 
@@ -74,5 +69,19 @@ public class GalleryActivity extends ActionBarActivity implements UIactions {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void showPreview(PreviewData previewData) {
+        for (int i = 0; i < previewData.getImages().size(); i++) {
+            photos_.add(previewData.getImages().get(i));
+        }
+
+        adapter_ = new FullScreenImageAdapter(this,photos_);
+        viewPager_.setAdapter(adapter_);
+        viewPager_.setCurrentItem(position_);
+    }
+
+    public Context getContextForClient(){
+        return this.getApplicationContext();
     }
 }

@@ -1,8 +1,11 @@
 package com.example.admin.googleplaces.managers;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
+import android.view.Display;
 
 import com.android.volley.Cache;
 import com.android.volley.Response;
@@ -46,14 +49,14 @@ public class RequestManager {
     private List<Photo> photoRefs = new ArrayList<Photo>();
     private static final String LOG_TAG = RequestManager.class.getSimpleName();
 
-    public RequestManager(UIactions clienActivity){
-       this.clientActivity_ = clienActivity;
+    public RequestManager(UIactions clienActivity) {
+        this.clientActivity_ = clienActivity;
     }
 
     /**
      * Parses json response which contains result of searching nearby places
      */
-    public void parseSearchResponse(String response){
+    public void parseSearchResponse(String response) {
         List<NearbyPlaceDetails> nearbyPlaces = new ArrayList<>();
         List<NearbyPlaceDetails> placesWithPhoto = new ArrayList<>();
         try {
@@ -68,7 +71,7 @@ public class RequestManager {
     /**
      * Parses json response which contains details about place asynchronously
      */
-    public void parseDetailedResponse(String response){
+    public void parseDetailedResponse(String response) {
         ExplicitPlaceDetails details = new ExplicitPlaceDetails();
         try {
             details = FetchPlaceDetailsRequest.parsePlaceDetailsResponse(response);
@@ -81,6 +84,7 @@ public class RequestManager {
 
     /**
      * Sends request (Search or Details) depends on the instance of request was sent
+     *
      * @param request type of request (can be either PlaceSearchRequest or PlaceDetailsRequst)
      */
     public void sendRequest(GeneralRequest request) {
@@ -123,10 +127,10 @@ public class RequestManager {
         return entry;
     }
 
-    private String getDataFromCache(String url){
+    private String getDataFromCache(String url) {
         Cache.Entry retrievedData = retrieveDataFromCache(url);
         String data = null;
-        if (retrievedData!= null) {
+        if (retrievedData != null) {
             try {
                 data = new String(retrievedData.data, "UTF-8");
             } catch (UnsupportedEncodingException e) {
@@ -136,13 +140,13 @@ public class RequestManager {
         return data;
     }
 
-   private Bitmap getPhotoFromCache(String url){
-       Cache.Entry retrievedData = retrieveDataFromCache(url);
-       Bitmap photoFromCache = null;
-       if (retrievedData != null) {
-           photoFromCache = BitmapFactory.decodeByteArray(retrievedData.data, 0, retrievedData.data.length);
-       }
-       return photoFromCache;
+    private Bitmap getPhotoFromCache(String url) {
+        Cache.Entry retrievedData = retrieveDataFromCache(url);
+        Bitmap photoFromCache = null;
+        if (retrievedData != null) {
+            photoFromCache = BitmapFactory.decodeByteArray(retrievedData.data, 0, retrievedData.data.length);
+        }
+        return photoFromCache;
     }
 
     /**
@@ -151,39 +155,41 @@ public class RequestManager {
     public void VsendPhotoRequest(Photo photo) {
         ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
-            final RequestParams requestParams = new RequestParams(60, 60, photo.getPhotoReference(), Utily.getApiKey(this.clientActivity_.getContextForClient()));
+        int width = Utily.getApropriateWidth(this.clientActivity_.getContextForClient(), photo.getWidth());
+        int height = Utily.getApropriateHeight(this.clientActivity_.getContextForClient(), photo.getHeight());
+        final RequestParams requestParams = new RequestParams(width, height, photo.getPhotoReference(), Utily.getApiKey(this.clientActivity_.getContextForClient()));
 
-            final FetchPhotoRequest photoRequest = new FetchPhotoRequest(requestParams);
-            String url = photoRequest.getUrl();
+        final FetchPhotoRequest photoRequest = new FetchPhotoRequest(requestParams);
+        String url = photoRequest.getUrl();
 
-           final ArrayList<Bitmap> photos = new ArrayList<>();
+        final ArrayList<Bitmap> photos = new ArrayList<>();
 
-            Bitmap photoFromCache = getPhotoFromCache(url);
-            if (photoFromCache != null) {
-                photos.add(photoFromCache);
-                handler_.sendMessage(handler_.obtainMessage(States.PHOTO_DOWNLOADED, photos));
-            } else {
+        Bitmap photoFromCache = getPhotoFromCache(url);
+        if (photoFromCache != null) {
+            photos.add(photoFromCache);
+            handler_.sendMessage(handler_.obtainMessage(States.PHOTO_DOWNLOADED, photos));
+        } else {
 
-                imageLoader.get(url, new ImageLoader.ImageListener() {
-                    @Override
-                    public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                        if (response.getBitmap() != null) {
-                            photos.add(response.getBitmap());
-                            handler_.sendMessage(handler_.obtainMessage(States.PHOTO_DOWNLOADED, photos));
-                        }
+            imageLoader.get(url, new ImageLoader.ImageListener() {
+                @Override
+                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                    if (response.getBitmap() != null) {
+                        photos.add(response.getBitmap());
+                        handler_.sendMessage(handler_.obtainMessage(States.PHOTO_DOWNLOADED, photos));
                     }
+                }
 
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e(LOG_TAG, "Error", error);
-                    }
-                });
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e(LOG_TAG, "Error", error);
+                }
+            });
 
-            }
+        }
 
     }
 
-    public void updatePreview(PreviewData previewData){
+    public void updatePreview(PreviewData previewData) {
         clientActivity_.showPreview(previewData);
     }
 
