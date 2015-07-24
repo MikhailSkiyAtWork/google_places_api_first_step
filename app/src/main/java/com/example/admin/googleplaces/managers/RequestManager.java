@@ -193,4 +193,8 @@ public class RequestManager {
         clientActivity_.showPreview(previewData);
     }
 
+    public void showWarning(){
+        clientActivity_.showWarning();
+    }
+
 }

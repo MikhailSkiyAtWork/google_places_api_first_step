@@ -81,6 +81,9 @@ public class FullscreenActivity extends ActionBarActivity implements UIactions {
         viewPager_.setCurrentItem(position_);
     }
 
+    // Necessary for supportin UIactions interface
+    public void showWarning(){}
+
     public Context getContextForClient(){
         return this.getApplicationContext();
     }

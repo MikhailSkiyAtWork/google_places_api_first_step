@@ -22,8 +22,8 @@ import java.util.List;
 
 public class GalleryActivity extends ActionBarActivity implements UIactions {
 
-   private RequestManager manager_ = new RequestManager(this);
-   private  List<Bitmap> photos_;
+    private RequestManager manager_ = new RequestManager(this);
+    private List<Bitmap> photos_;
     private String placeId_;
 
     @Override
@@ -39,7 +39,7 @@ public class GalleryActivity extends ActionBarActivity implements UIactions {
         photos_ = new ArrayList<>();
     }
 
-    public Context getContextForClient(){
+    public Context getContextForClient() {
         return this.getApplicationContext();
     }
 
@@ -49,8 +49,12 @@ public class GalleryActivity extends ActionBarActivity implements UIactions {
             photos_.add(previewData.getImages().get(i));
         }
         GridView gridView = (GridView) findViewById(R.id.gridview);
-        PhotoAdapter adapter = new PhotoAdapter(this, photos_,placeId_);
+        PhotoAdapter adapter = new PhotoAdapter(this, photos_, placeId_);
         gridView.setAdapter(adapter);
+    }
+
+    // Necessary for supportin UIactions interface
+    public void showWarning() {
     }
 
     @Override

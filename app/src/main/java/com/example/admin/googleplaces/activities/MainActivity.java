@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,7 +35,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
-public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapClickListener, UIactions {
+public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, UIactions {
 
 
     public static ImageView imageView;
@@ -52,26 +53,8 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         // Put data about display
         Utily.setDisplayPrefs(this);
-
-        text_ = (TextView) findViewById(R.id.place_name);
-        imageView = (ImageView) findViewById(R.id.preview_image);
-
-
-        showMoreButton = (Button) findViewById(R.id.more);
-        showMoreButton.setEnabled(false);
-        showMoreButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               // Intent intent = new Intent(MainActivity.this, GalleryActivity.class);
-                Intent intent = new Intent(MainActivity.this, GalleryActivity.class);
-                intent.putExtra(getResources().getString(R.string.place_id_key), placeId_);
-                startActivity(intent);
-            }
-        });
-
         setUpMapIfNeeded();
 
         // Handle user's click on the map
@@ -80,7 +63,6 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapCl
 
     @Override
     public void onMapClick(LatLng latLng) {
-        String point = latLng.toString();
         selectedPoint_ = latLng;
         map_.animateCamera(CameraUpdateFactory.newLatLng(latLng));
         RequestParams requestParams = new RequestParams(latLng, 50, Utily.getApiKey(this));
@@ -88,6 +70,7 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapCl
         manager_.sendRequest(searchRequest);
         // manager_.VsendSearchRequest(requestParams);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -110,38 +93,39 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapCl
     }
 
     public void showPreview(PreviewData previewData) {
+
         map_.clear();
         map_.setOnMarkerClickListener((GoogleMap.OnMarkerClickListener) this);
-        Bitmap image = BitmapFactory.decodeResource(getResources(),R.mipmap.ic_launcher);
+        Bitmap image = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
         if (previewData.getImages().size() != 0) {
-            ImageView imageView = (ImageView) this.findViewById(R.id.preview_image);
+            Log.v("SHOW_PREVIEW", Integer.toString(previewData.getImages().size()));
+            placeId_ = previewData.getPlaceId();
             Bitmap previewImage = previewData.getImages().get(PREVIEW_IMAGE_INDEX);
-            image =(Bitmap.createScaledBitmap(previewImage,60,60,false));
-            imageView.setImageBitmap(image);
+            image = (Bitmap.createScaledBitmap(previewImage, 60, 60, false));
+
+            map_.addMarker(new MarkerOptions()
+                            .position(selectedPoint_)
+                            .title(previewData.getName())
+                            .icon(BitmapDescriptorFactory.fromBitmap(MarkerView.getRoundedCroppedBitmap(image, 50)))
+            );
         }
-        TextView name = (TextView) this.findViewById(R.id.place_name);
-        name.setText(previewData.getName());
-        placeId_ = previewData.getPlaceId();
-        showMoreButton.setEnabled(true);
 
+    }
 
-        imageViewRound_ = new MarkerView(this);
-        imageViewRound_.setImageBitmap(image);
-
-        map_.addMarker(new MarkerOptions()
-        .position(selectedPoint_)
-        .title("lala")
-        .icon(BitmapDescriptorFactory.fromBitmap(MarkerView.getRoundedCroppedBitmap(image,40))));
+    public void showWarning() {
+        Toast.makeText(this, "There is no photos,please choose another place", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-
+        Intent intent = new Intent(MainActivity.this, GalleryActivity.class);
+        intent.putExtra(getResources().getString(R.string.place_id_key), placeId_);
+        startActivity(intent);
         Toast.makeText(this, marker.getTitle(), Toast.LENGTH_LONG).show();
         return true;
     }
 
-    public Context getContextForClient(){
+    public Context getContextForClient() {
         return getApplicationContext();
     }
 
@@ -152,9 +136,12 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapCl
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case (R.id.action_settings):
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+            default:
+                break;
         }
 
         return super.onOptionsItemSelected(item);

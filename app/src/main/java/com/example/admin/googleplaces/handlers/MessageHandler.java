@@ -47,13 +47,17 @@ public class MessageHandler extends Handler {
                 break;
 
             // Search response was parse out so send one photo request for preview
+            // If there is no places with photo notify user about it
             case States.SEARCH_RESPONSE_WAS_PARSE_OUT:
+                Log.v("SEARCH_RESPONSE PARSED", msg.obj.toString());
                 if (msg.obj != null) {
                     List<NearbyPlaceDetails> fetchedPlaces = (List<NearbyPlaceDetails>) msg.obj;
                     if (fetchedPlaces.size() != 0) {
                         previewData_.setName(fetchedPlaces.get(FIRST_ITEM).getName());
                         previewData_.setPlaceId(fetchedPlaces.get(FIRST_ITEM).getPlaceId());
                         manager.VsendPhotoRequest(fetchedPlaces.get(FIRST_ITEM).getPhotos().get(FIRST_ITEM));
+                    } else {
+                        manager.showWarning();
                     }
                 }
                 break;

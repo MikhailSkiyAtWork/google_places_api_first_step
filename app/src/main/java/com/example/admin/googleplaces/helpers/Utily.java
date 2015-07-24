@@ -26,6 +26,10 @@ public class Utily {
 
     public static final int WIDTH_CODE = 0;
     public static final int HEIGHT_CODE = 1;
+
+    public static final int NO_PHOTOS = 0;
+    public static final int PHOTO_WAS_FOUND = 1;
+
     public static final String DISPLAY_PREFS = "Display_prefs";
     public static final String DISPLAY_HEIGHT = "height";
     public static final String DISPLAY_WIDTH = "width";

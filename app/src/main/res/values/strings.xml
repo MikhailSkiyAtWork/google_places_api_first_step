@@ -4,14 +4,75 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
-<!-- TODO: Remove or change this placeholder text -->
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_gallery">GalleryActivity</string>
 
     <string name="place_id_key">place_id</string>
     <string name="title_activity_details">DetailsActivity</string>
 
-    <string name="lorem_ipsum">some_text</string>
-    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="title_activity_fullscreen">Fullscreen</string>
+    <string name="title_activity_settings">Settings</string>
+
+
+    <!-- Settings for Mode -->
+    <!-- Label for the mode -->
+    <string name="pref_mode_label">Mode</string>
+    <!-- Label for the Click-and-get mode -->
+    <string name="pref_mode_click_and_get_label">Click-and-Get</string>
+    <!-- Label for the Specific search mode -->
+    <string name="pref_mode_specific_search_label">Specific search</string>
+
+    <!-- Value in SharedPreferences for mode option -->
+    <string name="pref_modes_key" translatable="false">modes</string>
+    <!-- Value in SharedPreferences for Click-and-get mode  -->
+    <string name="pref_mode_click_and_get" translatable="false">click_and_get</string>
+    <!-- Value in SharedPreferences for Specific search mode -->
+    <string name="pref_mode_specific_search" translatable="false">specific_search</string>
+
+    <!-- Settings for Type -->
+
+    <!-- Label for the type-->
+    <string name="pref_type_label">Type</string>
+    <!-- Label for the All type -->
+    <string name="pref_type_all_label">All</string>
+    <!-- Label for the Establishment type  -->
+    <string name="pref_type_establishment_label">Establishment</string>
+    <!-- Label for the Restaurant type  -->
+    <string name="pref_type_restaurant_label" translatable="false">Restaurant</string>
+    <!-- Label for the Cafe type  -->
+    <string name="pref_type_cafe_label" translatable="false">Cafe</string>
+    <!-- Label for the Museum type  -->
+    <string name="pref_type_museum_label" translatable="false">Museum</string>
+
+
+    <!-- Value in SharedPreferences for type option -->
+    <string name="pref_types_key" translatable="false">types</string>
+    <!-- Value in SharedPreferences for all  -->
+    <string name="pref_type_all" translatable="false">all</string>
+    <!-- Value in SharedPreferences for establishment  -->
+    <string name="pref_type_establishment" translatable="false">establishment</string>
+    <!-- Value in SharedPreferences for restaurant -->
+    <string name="pref_type_restaurant" translatable="false">restaurant</string>
+    <!-- Value in SharedPreferences for cafe -->
+    <string name="pref_type_cafe" translatable="false">cafe</string>
+    <!-- Value for museum -->
+    <string name="pref_type_museum" translatable="false">museum</string>
+
+
+    <!-- Label for the radius-->
+    <string name="pref_radius_label">Radius</string>
+
+    <!-- Value in SharedPreferences for radius option -->
+    <string name="pref_radius_key" translatable="false">radius</string>
+    <string name="pref_radius_summary">Choose radius</string>
+    <string name="radius_dialog_title">Choose radius</string>
+
+
+
+    <string name="pref_type_summary">Check types of places</string>
+    <string name="setting_store_dialog_title">Check types of places</string>
+
+
 
 </resources>

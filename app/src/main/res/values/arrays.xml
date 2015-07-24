@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="pref_mode_options">
+        <item>@string/pref_mode_click_and_get_label</item>
+        <item>@string/pref_mode_specific_search_label</item>
+    </string-array>
+
+    <string-array name="pref_mode_values">
+        <item>@string/pref_mode_click_and_get</item>
+        <item>@string/pref_mode_specific_search</item>
+    </string-array>
+
+    <string-array name="pref_type_options">
+        <item>@string/pref_type_all_label</item>
+        <item>@string/pref_type_establishment_label</item>
+        <item>@string/pref_type_restaurant_label</item>
+        <item>@string/pref_type_cafe_label</item>
+        <item>@string/pref_type_museum_label</item>
+    </string-array>
+
+    <string-array name="pref_type_values">
+        <item>@string/pref_type_all</item>
+        <item>@string/pref_type_establishment</item>
+        <item>@string/pref_type_restaurant</item>
+        <item>@string/pref_type_cafe</item>
+        <item>@string/pref_type_museum</item>
+    </string-array>
+
+
+</resources>

@@ -13,5 +13,6 @@ import java.util.List;
  */
 public interface UIactions {
     void showPreview(PreviewData previewData);
+    void showWarning();
     Context getContextForClient();
 }
