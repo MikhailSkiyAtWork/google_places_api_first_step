@@ -34,6 +34,10 @@ public class JsonHelper {
     final static String ICON_KEY = "icon";
     final static String ID_KEY = "id";
     final static String NAME_KEY = "name";
+    final static String GEOMETRY = "geometry";
+    final static String LOCATION = "location";
+    final static String LAT = "lat";
+    final static String LNG = "lng";
 
     // Items for extracting photo attrs
     final static String PHOTOS_ARRAY_KEY = "photos";
@@ -135,6 +139,13 @@ public class JsonHelper {
         String id = nearbyPlaceDetailsJson.getString(ID_KEY);
         String name = nearbyPlaceDetailsJson.getString(NAME_KEY);
 
+        JSONObject geometry = nearbyPlaceDetailsJson.getJSONObject(GEOMETRY);
+        JSONObject location = geometry.getJSONObject(LOCATION);
+        double lat = location.getDouble(LAT);
+        double lng = location.getDouble(LNG);
+
+
+
         // Checks that this value exist
         double rating = 0;
         if (nearbyPlaceDetailsJson.has(RATING_KEY)) {
@@ -162,7 +173,7 @@ public class JsonHelper {
             }
         }
 
-        NearbyPlaceDetails nearbyPlaceDetails = new NearbyPlaceDetails(id, placeId, name, iconUrl, extractedPhotoList, types, rating);
+        NearbyPlaceDetails nearbyPlaceDetails = new NearbyPlaceDetails(id, placeId, name, iconUrl, extractedPhotoList, types, rating,lat,lng);
 
         return nearbyPlaceDetails;
     }

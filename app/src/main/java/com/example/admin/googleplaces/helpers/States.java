@@ -11,4 +11,5 @@ public class States {
     public static final int EXPLICIT_DETAILS_FETCHED = 5;
     public static final int EXPLICIT_DETAILS_WAS_PARSE_OUT = 6;
     public static final int SEARCH_RESPONSE_WAS_PARSE_OUT = 7;
+
 }

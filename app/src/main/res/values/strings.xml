@@ -4,6 +4,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
+    <string name="search_hint">What are you looking for"</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_gallery">GalleryActivity</string>
@@ -35,7 +37,7 @@
     <!-- Label for the type-->
     <string name="pref_type_label">Type</string>
     <!-- Label for the All type -->
-    <string name="pref_type_all_label">All</string>
+    <string name="pref_type_food_label">Food</string>
     <!-- Label for the Establishment type  -->
     <string name="pref_type_establishment_label">Establishment</string>
     <!-- Label for the Restaurant type  -->
@@ -49,7 +51,7 @@
     <!-- Value in SharedPreferences for type option -->
     <string name="pref_types_key" translatable="false">types</string>
     <!-- Value in SharedPreferences for all  -->
-    <string name="pref_type_all" translatable="false">all</string>
+    <string name="pref_type_food" translatable="false">food</string>
     <!-- Value in SharedPreferences for establishment  -->
     <string name="pref_type_establishment" translatable="false">establishment</string>
     <!-- Value in SharedPreferences for restaurant -->

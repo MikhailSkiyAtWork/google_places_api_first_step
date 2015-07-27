@@ -11,19 +11,21 @@
     </string-array>
 
     <string-array name="pref_type_options">
-        <item>@string/pref_type_all_label</item>
+
         <item>@string/pref_type_establishment_label</item>
         <item>@string/pref_type_restaurant_label</item>
         <item>@string/pref_type_cafe_label</item>
         <item>@string/pref_type_museum_label</item>
+        <item>@string/pref_type_food_label</item>
     </string-array>
 
     <string-array name="pref_type_values">
-        <item>@string/pref_type_all</item>
+
         <item>@string/pref_type_establishment</item>
         <item>@string/pref_type_restaurant</item>
         <item>@string/pref_type_cafe</item>
         <item>@string/pref_type_museum</item>
+        <item>@string/pref_type_food</item>
     </string-array>
 
 

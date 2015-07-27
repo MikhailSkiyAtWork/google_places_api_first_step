@@ -14,6 +14,8 @@ public class NearbyPlaceDetails extends PlaceDetails {
     private String id_;
     private String placeId_;
     private String name_;
+    private double latitude_;
+    private double longitude_;
 
     // URL for icon
     private URL iconUrl_;
@@ -23,7 +25,7 @@ public class NearbyPlaceDetails extends PlaceDetails {
 
     //region Constructors
 
-    public NearbyPlaceDetails(String id, String placeId_, String name_, URL iconUrl_, List<Photo> photos_, List<String> types_, double rating_) {
+    public NearbyPlaceDetails(String id, String placeId_, String name_, URL iconUrl_, List<Photo> photos_, List<String> types_, double rating_,double latitude, double longitude) {
         this.id_ = id;
         this.placeId_ = placeId_;
         this.name_ = name_;
@@ -31,6 +33,8 @@ public class NearbyPlaceDetails extends PlaceDetails {
         this.photos_ = photos_;
         this.types_ = types_;
         this.rating_ = rating_;
+        this.latitude_ = latitude;
+        this.longitude_ = longitude;
     }
 
     public NearbyPlaceDetails(String id, String placeId_, String name_, URL iconUrl_, List<String> types_) {
@@ -99,6 +103,23 @@ public class NearbyPlaceDetails extends PlaceDetails {
     public void setRating(double rating) {
         this.rating_ = rating;
     }
+
+    public void setLatitude(double latitude){
+        this.latitude_ = latitude;
+    }
+
+    public double getLatitude(){
+        return this.latitude_;
+    }
+
+    public void setLongitude(double longitude){
+        this.longitude_ = longitude;
+    }
+
+    public double getLongitude(){
+        return this.longitude_;
+    }
+
 //endregion
 
 

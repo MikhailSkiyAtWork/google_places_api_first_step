@@ -37,6 +37,9 @@ public class RequestParams {
     //  A string identifier that uniquely identifies a photo. Are returned from Place Details request
     private String photoReference_;
 
+    // Query for text search
+    public String query_;
+
     public String getPhotoReference() {
         return this.photoReference_;
     }
@@ -100,11 +103,21 @@ public class RequestParams {
         return this.maxHeight;
     }
 
+    public void setQuery(String query){
+        this.query_ = query;
+    }
 
+    public String getQuery(){
+        return this.query_;
+    }
 
     //endregion
 
     //region Constructors
+
+    public  RequestParams(){
+
+    }
 
     // Create params for Place Search Requst
     public RequestParams(LatLng point, int radius, String key) {
@@ -124,6 +137,13 @@ public class RequestParams {
         setMaxWidth(maxWidth);
         setMaxHeight(maxHeight);
         this.photoReference_ = photoReference;
+        this.apiKey_ = key;
+    }
+
+    public RequestParams(String query, LatLng point,int radius, String key){
+        this.query_ = query;
+        setPoint(point);
+        setRadius(radius);
         this.apiKey_ = key;
     }
 

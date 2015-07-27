@@ -15,6 +15,7 @@
         android:title="@string/pref_radius_label"
         android:summary="@string/pref_radius_summary"
         android:dialogTitle="@string/radius_dialog_title"
+        android:inputType="number"
         android:defaultValue="50" />
 
     <MultiSelectListPreference

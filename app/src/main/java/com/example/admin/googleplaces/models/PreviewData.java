@@ -13,6 +13,8 @@ public class PreviewData {
     private String address_;
     private ArrayList<Bitmap> images_;
     private String placeId_;
+    private double latitude_;
+    private double longitude_;
 
     public List<Bitmap> getImages() {
         return images_;
@@ -45,5 +47,21 @@ public class PreviewData {
 
     public void setPlaceId(String placeId) {
         this.placeId_ = placeId;
+    }
+
+    public void setLatitude(double latitude){
+        this.latitude_ = latitude;
+    }
+
+    public double getLatitude(){
+        return this.latitude_;
+    }
+
+    public void setLongitude(double longitude){
+        this.longitude_ = longitude;
+    }
+
+    public double getLongitude(){
+        return this.longitude_;
     }
 }

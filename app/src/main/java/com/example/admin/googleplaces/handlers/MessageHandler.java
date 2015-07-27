@@ -55,6 +55,8 @@ public class MessageHandler extends Handler {
                     if (fetchedPlaces.size() != 0) {
                         previewData_.setName(fetchedPlaces.get(FIRST_ITEM).getName());
                         previewData_.setPlaceId(fetchedPlaces.get(FIRST_ITEM).getPlaceId());
+                        previewData_.setLatitude(fetchedPlaces.get(FIRST_ITEM).getLatitude());
+                        previewData_.setLongitude(fetchedPlaces.get(FIRST_ITEM).getLongitude());
                         manager.VsendPhotoRequest(fetchedPlaces.get(FIRST_ITEM).getPhotos().get(FIRST_ITEM));
                     } else {
                         manager.showWarning();

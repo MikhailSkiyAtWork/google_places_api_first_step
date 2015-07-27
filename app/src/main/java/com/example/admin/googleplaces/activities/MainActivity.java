@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,8 +13,11 @@ import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +28,8 @@ import com.example.admin.googleplaces.managers.RequestManager;
 import com.example.admin.googleplaces.models.PreviewData;
 import com.example.admin.googleplaces.models.RequestParams;
 import com.example.admin.googleplaces.requests.FetchPlaceSearchRequest;
+import com.example.admin.googleplaces.requests.FetchTextSearchRequest;
+import com.example.admin.googleplaces.services.GPSTracker;
 import com.example.admin.googleplaces.ui.MarkerView;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -48,11 +54,44 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapCl
     private String placeId_;
     private ImageView imageViewRound_;
     private LatLng selectedPoint_;
+    private LinearLayout mainLayout_;
+    private String selectedMode_;
+    private EditText searchField_;
+    private Button searchButton_;
+    private LinearLayout layout_;
+    private GPSTracker tracker_;
+    private double latitude_;
+    private double longitude_;
+    private String radius_;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        searchField_ = (EditText)this.findViewById(R.id.search_field);
+        searchButton_ = (Button)this.findViewById(R.id.search_button);
+
+        // Get radius values from SharedPreferences
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        radius_ = preferences.getString(getResources().getString(R.string.pref_radius_key), "50");
+
+        // Get current location
+        tracker_ = new GPSTracker(this);
+        if (tracker_.canGetLocation()) {
+            latitude_ = tracker_.getLatitude();
+            longitude_ = tracker_.getLongitude();
+        }
+
+        searchButton_.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendTextSearchRequest();
+            }
+        });
+
+
+        mainLayout_ = (LinearLayout) this.findViewById(R.id.main_layout);
+
         // Put data about display
         Utily.setDisplayPrefs(this);
         setUpMapIfNeeded();
@@ -65,12 +104,11 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapCl
     public void onMapClick(LatLng latLng) {
         selectedPoint_ = latLng;
         map_.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-        RequestParams requestParams = new RequestParams(latLng, 50, Utily.getApiKey(this));
+
+        RequestParams requestParams = new RequestParams(latLng,Integer.parseInt(radius_), Utily.getApiKey(this));
         FetchPlaceSearchRequest searchRequest = new FetchPlaceSearchRequest(requestParams);
         manager_.sendRequest(searchRequest);
-        // manager_.VsendSearchRequest(requestParams);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -103,8 +141,11 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapCl
             Bitmap previewImage = previewData.getImages().get(PREVIEW_IMAGE_INDEX);
             image = (Bitmap.createScaledBitmap(previewImage, 60, 60, false));
 
+            LatLng foundPlace = new LatLng(previewData.getLatitude(),previewData.getLongitude());
+            map_.animateCamera(CameraUpdateFactory.newLatLng(foundPlace));
+
             map_.addMarker(new MarkerOptions()
-                            .position(selectedPoint_)
+                            .position(foundPlace)
                             .title(previewData.getName())
                             .icon(BitmapDescriptorFactory.fromBitmap(MarkerView.getRoundedCroppedBitmap(image, 50)))
             );
@@ -147,11 +188,64 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMapCl
         return super.onOptionsItemSelected(item);
     }
 
+    public void sendTextSearchRequest() {
+        String query = searchField_.getText().toString();
+        LatLng currentLocation = new LatLng(latitude_, longitude_);
+        RequestParams requestParams = new RequestParams(query, currentLocation, Integer.parseInt(radius_), Utily.getApiKey(this));
+
+        FetchTextSearchRequest searchRequest = new FetchTextSearchRequest(requestParams);
+        manager_.sendRequest(searchRequest);
+
+    }
+
     private void setUpMap() {
         CameraUpdate center = CameraUpdateFactory.newLatLng(new LatLng(47.2092003, 38.9334364));
         CameraUpdate zoom = CameraUpdateFactory.zoomTo(14);
         map_.moveCamera(center);
         map_.animateCamera(zoom);
+    }
+
+    /**
+     * Creates UI depend on the selcted mode
+     */
+    private void createUI() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        selectedMode_ = preferences.getString(getResources().getString(R.string.pref_modes_key), "");
+
+        if (selectedMode_.equals(getResources().getString(R.string.pref_mode_specific_search))) {
+
+            if (layout_ == null || !layout_.isFocusable()) {
+
+                // Create UI
+                layout_ = new LinearLayout(this);
+
+                layout_.setId(R.id.search_field);
+                layout_.setOrientation(LinearLayout.HORIZONTAL);
+                layout_.setWeightSum(4.0f);
+
+                searchField_ = new EditText(this);
+                searchField_.setHint("What are you looking for?");
+
+                searchButton_ = new Button(this);
+                searchButton_.setText("Search");
+                searchButton_.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        sendTextSearchRequest();
+                    }
+                });
+
+
+                layout_.addView(searchField_);
+                layout_.addView(searchButton_);
+
+                mainLayout_.addView(layout_);
+            }
+        } else {
+            if (mainLayout_ != null) {
+                mainLayout_.removeView(layout_);
+            }
+        }
     }
 
 }

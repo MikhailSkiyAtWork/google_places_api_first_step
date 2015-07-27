@@ -67,7 +67,7 @@ public class FetchPlaceSearchRequest extends GeneralRequest {
     }
 
     /**
-     * Creates query for search request by LatLng and Google Places API KEY
+     * Creates url for search request by LatLng and Google Places API KEY
      */
     // TODO Check requestParams.getPoint() and others not null or empty
     public String getUrl() {

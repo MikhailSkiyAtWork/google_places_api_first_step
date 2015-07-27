@@ -33,10 +33,6 @@
             android:label="@string/title_activity_gallery" >
         </activity>
         <activity
-            android:name=".activities.SliderActivity"
-            android:label="@string/title_activity_details" >
-        </activity>
-        <activity
             android:name=".activities.FullscreenActivity"
             android:label="@string/title_activity_fullscreen" >
         </activity>
