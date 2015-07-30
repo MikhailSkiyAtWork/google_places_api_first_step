@@ -68,7 +68,7 @@ public class PhotoAdapter extends BaseAdapter {
             // on selecting grid view image
             // launch full screen activity
             Intent i = new Intent(context_, FullscreenActivity.class);
-            i.putExtra("position", _postion);
+            i.putExtra(context_.getResources().getString(R.string.position), _postion);
             i.putExtra(context_.getResources().getString(R.string.place_id_key), placeId_);
             context_.startActivity(i);
         }

@@ -9,13 +9,8 @@ import com.example.admin.googleplaces.interfaces.UIactions;
 import com.example.admin.googleplaces.managers.RequestManager;
 import com.example.admin.googleplaces.models.ExplicitPlaceDetails;
 import com.example.admin.googleplaces.models.NearbyPlaceDetails;
-import com.example.admin.googleplaces.models.Photo;
 import com.example.admin.googleplaces.models.PreviewData;
-import com.example.admin.googleplaces.requests.FetchPlaceDetailsRequest;
-import com.example.admin.googleplaces.requests.FetchPlaceSearchRequest;
 import com.example.admin.googleplaces.helpers.States;
-
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +25,8 @@ public class MessageHandler extends Handler {
     private UIactions activity_;
     private RequestManager manager;
     private PreviewData previewData_ = new PreviewData();
+    private List<NearbyPlaceDetails> fetchedPlaces_;
+    private List<PreviewData> manyPreviews_ = new ArrayList<>();
 
     public MessageHandler(RequestManager manager) {
         this.manager = manager;
@@ -40,6 +37,7 @@ public class MessageHandler extends Handler {
             case States.SEND_SEARCH_REQUEST:
                 break;
             case States.NEARBY_PLACES_WAS_FOUND:
+                Log.v("Status:", "NEARBY_PLACES_WAS_FOUND");
                 if (msg.obj != null) {
                     String response = (String) msg.obj;
                     manager.parseSearchResponse(response);
@@ -49,15 +47,12 @@ public class MessageHandler extends Handler {
             // Search response was parse out so send one photo request for preview
             // If there is no places with photo notify user about it
             case States.SEARCH_RESPONSE_WAS_PARSE_OUT:
-                Log.v("SEARCH_RESPONSE PARSED", msg.obj.toString());
+                Log.v("Status:", "SEARCH_RESPONSE_WAS_PARSE_OUT");
                 if (msg.obj != null) {
-                    List<NearbyPlaceDetails> fetchedPlaces = (List<NearbyPlaceDetails>) msg.obj;
-                    if (fetchedPlaces.size() != 0) {
-                        previewData_.setName(fetchedPlaces.get(FIRST_ITEM).getName());
-                        previewData_.setPlaceId(fetchedPlaces.get(FIRST_ITEM).getPlaceId());
-                        previewData_.setLatitude(fetchedPlaces.get(FIRST_ITEM).getLatitude());
-                        previewData_.setLongitude(fetchedPlaces.get(FIRST_ITEM).getLongitude());
-                        manager.VsendPhotoRequest(fetchedPlaces.get(FIRST_ITEM).getPhotos().get(FIRST_ITEM));
+                    fetchedPlaces_ = (List<NearbyPlaceDetails>) msg.obj;
+                    if (fetchedPlaces_.size() != 0) {
+                        Log.v("SIZE", Integer.toString(fetchedPlaces_.size()));
+                        manager.getCurrentPlacePreview(fetchedPlaces_, FIRST_ITEM);
                     } else {
                         manager.showWarning();
                     }
@@ -65,11 +60,35 @@ public class MessageHandler extends Handler {
                 break;
 
             case States.PHOTO_DOWNLOADED:
+                Log.v("Status:", "PHOTO_DOWNLOADED");
+
                 if (msg.obj != null) {
                     ArrayList<Bitmap> images = new ArrayList<Bitmap>();
                     images = (ArrayList<Bitmap>) msg.obj;
                     previewData_.setImages(images);
                     manager.updatePreview(previewData_);
+                }
+                break;
+
+            case States.PHOTO_PREVIEW_DOWNLOADED:
+                Log.v("Status:", "PHOTO_PREVIEW_DOWNLOADED");
+
+                if (msg.obj != null) {
+                    PreviewData downloadedPreview = (PreviewData) msg.obj;
+
+                    Log.v("Name", downloadedPreview.getName());
+                    Log.v("PlaceId", downloadedPreview.getPlaceId());
+                    Log.v("Latitude", Double.toString(downloadedPreview.getLatitude()));
+                    Log.v("Longitude", Double.toString(downloadedPreview.getLongitude()));
+
+                    // show preview
+                    manager.updatePreview(downloadedPreview);
+
+                    if (downloadedPreview.getIndex() < fetchedPlaces_.size() - 1) {
+                        Log.v("Count of places", Integer.toString(fetchedPlaces_.size()));
+                        Log.v("Index", Integer.toString(downloadedPreview.getIndex()));
+                        manager.getCurrentPlacePreview(fetchedPlaces_, downloadedPreview.getIndex() + 1);
+                    }
                 }
                 break;
 
@@ -84,7 +103,7 @@ public class MessageHandler extends Handler {
                 if (msg.obj != null) {
                     ExplicitPlaceDetails details = (ExplicitPlaceDetails) msg.obj;
                     for (int i = 0; i < details.getPhotos().size(); i++) {
-                        manager.VsendPhotoRequest(details.getPhotos().get(i));
+                        manager.postPhotoRequest(details.getPhotos().get(i));
                     }
                 }
                 break;

@@ -9,6 +9,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * Created by Mikhail Valuyskiy on 27.07.2015.
  */
@@ -30,6 +32,19 @@ public class GPSTracker extends Service implements LocationListener {
     public GPSTracker(Context context){
         this.context_ = context;
         getLocation();
+    }
+
+    public boolean isGpsEnabled() {
+        LocationManager locationManager = (LocationManager) context_.getSystemService(LOCATION_SERVICE);
+        boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        return isGPSEnabled;
+    }
+
+    public LatLng getCurrentLocation(){
+        double latitude = this.getLatitude();
+        double longitude = this.getLongitude();
+        LatLng currentLocation = new LatLng(latitude,longitude);
+        return currentLocation;
     }
 
     public Location getLocation(){

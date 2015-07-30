@@ -4,8 +4,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
-    <string name="search_hint">What are you looking for"</string>
-
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_gallery">GalleryActivity</string>
@@ -15,6 +13,21 @@
 
     <string name="title_activity_fullscreen">Fullscreen</string>
     <string name="title_activity_settings">Settings</string>
+
+    <!-- Labels for MainActivity -->
+    <string name="no_photo_label">There is no photos,please choose another place</string>
+    <string name="no_gps_label">The GPS is off, please enable your GPS</string>
+    <string name="search_hint">What are you looking for</string>
+    <!-- Labels for Buttons in MainActivity -->
+    <string name="search_button">search</string>
+    <string name="clear_button">clear</string>
+    <string name="types_button">types</string>
+    <string name="find_me_button">me</string>
+    <!-- Labels for Markers in MainActivity -->
+    <string name="my_location_label">My location</string>
+
+
+
 
 
     <!-- Settings for Mode -->
@@ -69,6 +82,9 @@
     <string name="pref_radius_key" translatable="false">radius</string>
     <string name="pref_radius_summary">Choose radius</string>
     <string name="radius_dialog_title">Choose radius</string>
+
+    <!-- Value for extra params -->
+    <string name="position" translatable="false">position</string>
 
 
 

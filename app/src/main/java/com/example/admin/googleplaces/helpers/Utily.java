@@ -9,6 +9,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
@@ -18,6 +25,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 
 /**
  * Helper for general operations
@@ -121,6 +129,50 @@ public class Utily {
         if (apropriateHeight == 0) apropriateHeight = apropriateHeight + 1;
         int resultHeight = currentSize/apropriateHeight;
         return resultHeight;
+    }
+
+    public static Bitmap getRoundedCroppedBitmap(Bitmap bitmap,int radius){
+        Bitmap finalBitmap;
+        if (bitmap.getWidth()!=radius || bitmap.getHeight() != radius)
+            finalBitmap = Bitmap.createScaledBitmap(bitmap,radius,radius,false);
+        else
+            finalBitmap = bitmap;
+        Bitmap output = Bitmap.createBitmap(finalBitmap.getWidth(),finalBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0,0,finalBitmap.getWidth(),finalBitmap.getHeight());
+        paint.setAntiAlias(true);
+        paint.setFilterBitmap(true);
+        paint.setDither(true);
+        canvas.drawARGB(0,0,0,0);
+        paint.setColor(Color.parseColor("#BAB399"));
+        canvas.drawCircle(finalBitmap.getWidth() / 2 + 0.7f,
+                finalBitmap.getHeight() / 2 + 0.7f,
+                finalBitmap.getWidth() / 2 + 0.1f, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(finalBitmap, rect, rect, paint);
+
+        return output;
+    }
+
+    /**
+     * Creates short string which contains types in special format (such as type1|type2|type3|type4)
+     */
+    public static String createRequestFriendlyTypes (ArrayList<String> values) {
+        String requestFriendlyString = "";
+        if (values.size() == 1) {
+            requestFriendlyString = values.get(0);
+        } else {
+            for (int i = 0; i < values.size(); i++) {
+                requestFriendlyString += values.get(i);
+                if (values.size()-1 != i){
+                    requestFriendlyString +="|";
+                }
+            }
+        }
+        Log.v("TYPES",requestFriendlyString);
+        return requestFriendlyString;
     }
 
 }

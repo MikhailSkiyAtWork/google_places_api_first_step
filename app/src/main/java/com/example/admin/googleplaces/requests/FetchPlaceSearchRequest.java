@@ -7,6 +7,7 @@ import android.util.Log;
 
 //import com.example.admin.googleplaces.listeners.AsyncTaskListener;
 import com.example.admin.googleplaces.helpers.States;
+import com.example.admin.googleplaces.helpers.Utily;
 import com.example.admin.googleplaces.models.Photo;
 import com.example.admin.googleplaces.models.NearbyPlaceDetails;
 import com.example.admin.googleplaces.helpers.JsonHelper;
@@ -39,6 +40,7 @@ public class FetchPlaceSearchRequest extends GeneralRequest {
     private static final String BASE_PLACE_SEARCH_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?";
     private static final String LOCATION_KEY = "location";
     private static final String RADIUS_KEY = "radius";
+    private static final String TYPES_KEY = "types";
     private static final String SENSOR_KEY = "sensor";
     protected static final String GOOGLE_PLACES_API_KEY = "key";
     //endregion
@@ -69,15 +71,13 @@ public class FetchPlaceSearchRequest extends GeneralRequest {
     /**
      * Creates url for search request by LatLng and Google Places API KEY
      */
-    // TODO Check requestParams.getPoint() and others not null or empty
     public String getUrl() {
         String url = null;
-        Uri builtUri = Uri.parse(BASE_PLACE_SEARCH_URL).buildUpon()
+        Uri builtUri= Uri.parse(BASE_PLACE_SEARCH_URL).buildUpon()
                 .appendQueryParameter(LOCATION_KEY, this.requestParams_.getPoint())
                 .appendQueryParameter(RADIUS_KEY, this.requestParams_.getRadius())
                 .appendQueryParameter(GOOGLE_PLACES_API_KEY, this.requestParams_.getApiKey())
                 .build();
-
         url = builtUri.toString();
         return url;
     }

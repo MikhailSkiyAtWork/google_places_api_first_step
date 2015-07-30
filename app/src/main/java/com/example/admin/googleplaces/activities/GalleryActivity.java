@@ -34,8 +34,7 @@ public class GalleryActivity extends ActionBarActivity implements UIactions {
         Bundle extras = getIntent().getExtras();
         placeId_ = extras.getString(getResources().getString(R.string.place_id_key));
         RequestParams requestParams = new RequestParams(placeId_, Utily.getApiKey(this));
-        FetchPlaceDetailsRequest detailsRequest = new FetchPlaceDetailsRequest(requestParams);
-        manager_.sendRequest(detailsRequest);
+        manager_.postDetailsSearchRequest(requestParams);
         photos_ = new ArrayList<>();
     }
 
@@ -57,26 +56,4 @@ public class GalleryActivity extends ActionBarActivity implements UIactions {
     public void showWarning() {
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_gallery, menu);
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }

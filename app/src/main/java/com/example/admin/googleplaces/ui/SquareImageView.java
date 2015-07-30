@@ -7,27 +7,22 @@ import android.widget.ImageView;
 /**
  * Created by Mikhail Valuyskiy on 23.07.2015.
  */
-public class SquareImageView extends ImageView
-{
-    public SquareImageView(Context context)
-    {
+public class SquareImageView extends ImageView {
+    public SquareImageView(Context context) {
         super(context);
     }
 
-    public SquareImageView(Context context, AttributeSet attrs)
-    {
+    public SquareImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SquareImageView(Context context, AttributeSet attrs, int defStyle)
-    {
+    public SquareImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
-    {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        setMeasuredDimension(getMeasuredWidth(), getMeasuredWidth()); //Snap to width
+        setMeasuredDimension(getMeasuredWidth(), getMeasuredWidth());
     }
 }

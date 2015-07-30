@@ -1,7 +1,6 @@
 package com.example.admin.googleplaces.managers;
 
 import android.app.Application;
-import android.app.DownloadManager;
 import android.text.TextUtils;
 
 import com.android.volley.Request;
@@ -10,7 +9,6 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import com.example.admin.googleplaces.helpers.LruBitmapCache;
 
-import java.util.Objects;
 
 /**
  * Created by Mikhail Valuyskiy on 21.07.2015.
@@ -24,7 +22,7 @@ public class AppController extends Application {
     private static AppController instance_;
 
     @Override
-    public void onCreate(){
+    public void onCreate() {
         super.onCreate();
         instance_ = this;
     }

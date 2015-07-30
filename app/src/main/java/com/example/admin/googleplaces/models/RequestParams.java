@@ -2,6 +2,8 @@ package com.example.admin.googleplaces.models;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
+
 /**
  * Created by Mikhail Valuyskiy on 09.07.2015.
  */
@@ -40,16 +42,7 @@ public class RequestParams {
     // Query for text search
     public String query_;
 
-    public String getPhotoReference() {
-        return this.photoReference_;
-    }
-
-    public void setPhotoReference(String photoReference) {
-        this.photoReference_ = photoReference;
-    }
-
-
-
+    public ArrayList<String> types_;
 
     //region Accessors
     public String getApiKey() {
@@ -109,6 +102,22 @@ public class RequestParams {
 
     public String getQuery(){
         return this.query_;
+    }
+
+    public String getPhotoReference() {
+        return this.photoReference_;
+    }
+
+    public void setPhotoReference(String photoReference) {
+        this.photoReference_ = photoReference;
+    }
+
+    public ArrayList<String> getTypes() {
+        return types_;
+    }
+
+    public void setTypes(ArrayList<String> types) {
+        this.types_ = types;
     }
 
     //endregion

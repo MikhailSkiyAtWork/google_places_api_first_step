@@ -15,14 +15,8 @@ public class PreviewData {
     private String placeId_;
     private double latitude_;
     private double longitude_;
-
-    public List<Bitmap> getImages() {
-        return images_;
-    }
-
-    public void setImages(ArrayList<Bitmap> images) {
-        this.images_ = images;
-    }
+    private Photo photo_;
+    private int index_;
 
 
     public String getName() {
@@ -31,6 +25,14 @@ public class PreviewData {
 
     public void setName(String name) {
         this.name_ = name;
+    }
+
+    public List<Bitmap> getImages() {
+        return images_;
+    }
+
+    public void setImages(ArrayList<Bitmap> images) {
+        this.images_ = images;
     }
 
     public String getAddress() {
@@ -49,19 +51,36 @@ public class PreviewData {
         this.placeId_ = placeId;
     }
 
-    public void setLatitude(double latitude){
-        this.latitude_ = latitude;
-    }
-
-    public double getLatitude(){
+    public double getLatitude() {
         return this.latitude_;
     }
 
-    public void setLongitude(double longitude){
+    public void setLatitude(double latitude) {
+        this.latitude_ = latitude;
+    }
+
+    public double getLongitude() {
+        return this.longitude_;
+    }
+
+    public void setLongitude(double longitude) {
         this.longitude_ = longitude;
     }
 
-    public double getLongitude(){
-        return this.longitude_;
+
+    public Photo getPhoto() {
+        return photo_;
+    }
+
+    public void setPhoto(Photo photo) {
+        this.photo_ = photo;
+    }
+
+    public int getIndex() {
+        return index_;
+    }
+
+    public void setIndex(int count) {
+        this.index_ = count;
     }
 }
