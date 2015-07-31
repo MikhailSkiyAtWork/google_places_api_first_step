@@ -26,7 +26,6 @@ public class MessageHandler extends Handler {
     private RequestManager manager;
     private PreviewData previewData_ = new PreviewData();
     private List<NearbyPlaceDetails> fetchedPlaces_;
-    private List<PreviewData> manyPreviews_ = new ArrayList<>();
 
     public MessageHandler(RequestManager manager) {
         this.manager = manager;

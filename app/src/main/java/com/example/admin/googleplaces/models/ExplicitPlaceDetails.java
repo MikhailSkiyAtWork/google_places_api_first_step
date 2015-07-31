@@ -10,8 +10,8 @@ import java.util.List;
  * Describes explicit details about selected place
  */
 public class ExplicitPlaceDetails extends PlaceDetails {
-    private String name_;
 
+    private String name_;
 
     public  ExplicitPlaceDetails(){}
 

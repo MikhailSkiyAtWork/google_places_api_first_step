@@ -26,10 +26,6 @@
     <!-- Labels for Markers in MainActivity -->
     <string name="my_location_label">My location</string>
 
-
-
-
-
     <!-- Settings for Mode -->
     <!-- Label for the mode -->
     <string name="pref_mode_label">Mode</string>
@@ -60,7 +56,6 @@
     <!-- Label for the Museum type  -->
     <string name="pref_type_museum_label" translatable="false">Museum</string>
 
-
     <!-- Value in SharedPreferences for type option -->
     <string name="pref_types_key" translatable="false">types</string>
     <!-- Value in SharedPreferences for all  -->
@@ -74,7 +69,6 @@
     <!-- Value for museum -->
     <string name="pref_type_museum" translatable="false">museum</string>
 
-
     <!-- Label for the radius-->
     <string name="pref_radius_label">Radius</string>
 
@@ -86,11 +80,15 @@
     <!-- Value for extra params -->
     <string name="position" translatable="false">position</string>
 
-
-
     <string name="pref_type_summary">Check types of places</string>
     <string name="setting_store_dialog_title">Check types of places</string>
 
-
+    <!-- Lables for errors -->
+    <string name="timeout_error">The connection or the socket timed out</string>
+    <string name="auth_error">There was an authentication failure when performing a Request</string>
+    <string name="network_error">There was a network error when performing a Volley request</string>
+    <string name="no_connection_error">No connection could be established when performing a Volley request</string>
+    <string name="parse_error">The server\'s response could not be parsed.</string>
+    <string name="server_error">The server\'s error</string>
 
 </resources>

@@ -20,6 +20,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
 
+import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
+import com.example.admin.googleplaces.R;
+import com.example.admin.googleplaces.activities.MainActivity;
 import com.example.admin.googleplaces.interfaces.UIactions;
 import com.google.android.gms.maps.model.LatLng;
 

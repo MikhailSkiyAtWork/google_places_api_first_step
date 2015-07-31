@@ -43,7 +43,7 @@ public class ClassesTests extends AndroidTestCase {
         types.add(Constants.POINT_OF_INTEREST_TYPE);
         types.add(Constants.ESTABLISHMENT);
 
-        NearbyPlaceDetails nearbyPlaceDetails = new NearbyPlaceDetails(Constants.ID, Constants.PLACE_ID, Constants.NAME, iconUrl, photos, types, Constants.RATING);
+        NearbyPlaceDetails nearbyPlaceDetails = new NearbyPlaceDetails(Constants.ID, Constants.PLACE_ID, Constants.NAME, iconUrl, photos, types, Constants.RATING,Constants.LATITUDE,Constants.LONGITUDE);
 
         assertEquals(Constants.ID, nearbyPlaceDetails.getId());
         assertEquals(Constants.PLACE_ID, nearbyPlaceDetails.getPlaceId());
@@ -56,5 +56,8 @@ public class ClassesTests extends AndroidTestCase {
         assertEquals(types.get(2), nearbyPlaceDetails.getTypes().get(2));
         // Check rating
         assertEquals(Constants.RATING, nearbyPlaceDetails.getRating());
+        // Check Lat and Long
+        assertEquals(Constants.LATITUDE,nearbyPlaceDetails.getLatitude());
+        assertEquals(Constants.LONGITUDE,nearbyPlaceDetails.getLongitude());
     }
 }

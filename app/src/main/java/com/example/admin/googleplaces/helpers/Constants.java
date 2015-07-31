@@ -9,6 +9,7 @@ public class Constants {
     public static final int DEFAULT_CROPPING_RADIUS = 50;
     public static final int HEIGHT_PREVIEW = 60;
     public static final int WIDTH_PREVIEW = 60;
+    public static final int ONE_CLICK_RADIUS = 5;
 
     public static final int DEFAULT_ZOOM = 14;
 

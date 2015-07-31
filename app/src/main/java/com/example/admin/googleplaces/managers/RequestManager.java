@@ -3,9 +3,16 @@ package com.example.admin.googleplaces.managers;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Cache;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -77,17 +84,17 @@ public class RequestManager {
         handler_.sendMessage(handler_.obtainMessage(States.EXPLICIT_DETAILS_WAS_PARSE_OUT, details));
     }
 
-    public void postNearbySearchRequest(RequestParams requestParams){
+    public void postNearbySearchRequest(RequestParams requestParams) {
         FetchPlaceSearchRequest searchRequest = new FetchPlaceSearchRequest(requestParams);
         this.postRequest(searchRequest);
     }
 
-    public void postTextSearchRequest(RequestParams requestParams){
+    public void postTextSearchRequest(RequestParams requestParams) {
         FetchTextSearchRequest searchRequest = new FetchTextSearchRequest(requestParams);
         this.postRequest(searchRequest);
     }
 
-    public void postDetailsSearchRequest(RequestParams requestParams){
+    public void postDetailsSearchRequest(RequestParams requestParams) {
         FetchPlaceDetailsRequest detailsRequest = new FetchPlaceDetailsRequest(requestParams);
         this.postRequest(detailsRequest);
     }
@@ -123,6 +130,8 @@ public class RequestManager {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             Log.e(LOG_TAG, "Error", error);
+                            Toast.makeText(clientActivity_.getContextForClient(), getUserFriendlyErrorMsg(error),
+                                    Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -171,7 +180,7 @@ public class RequestManager {
         final FetchPhotoRequest photoRequest = new FetchPhotoRequest(requestParams);
         String url = photoRequest.getUrl();
         Log.v("URL", url);
-       final ArrayList<Bitmap> photos = new ArrayList<>();
+        final ArrayList<Bitmap> photos = new ArrayList<>();
 
         Bitmap photoFromCache = getPhotoFromCache(url);
 
@@ -194,6 +203,8 @@ public class RequestManager {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e(LOG_TAG, "Error", error);
+                    Toast.makeText(clientActivity_.getContextForClient(), getUserFriendlyErrorMsg(error),
+                            Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -237,6 +248,8 @@ public class RequestManager {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e(LOG_TAG, "Error", error);
+                    Toast.makeText(clientActivity_.getContextForClient(), getUserFriendlyErrorMsg(error),
+                            Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -244,7 +257,7 @@ public class RequestManager {
 
     }
 
-    public void getCurrentPlacePreview(List<NearbyPlaceDetails> places, int i){
+    public void getCurrentPlacePreview(List<NearbyPlaceDetails> places, int i) {
         PreviewData preview = new PreviewData();
         preview.setName(places.get(i).getName());
         preview.setPlaceId(places.get(i).getPlaceId());
@@ -260,8 +273,32 @@ public class RequestManager {
         clientActivity_.showPreview(previewData);
     }
 
-    public void showWarning(){
+    public void showWarning() {
         clientActivity_.showWarning();
+    }
+
+    public String getUserFriendlyErrorMsg(VolleyError error) {
+        if (error instanceof TimeoutError) {
+            return this.clientActivity_.getContextForClient().getResources().getString(R.string.timeout_error);
+        }
+        if (error instanceof AuthFailureError) {
+            return this.clientActivity_.getContextForClient().getResources().getString(R.string.auth_error);
+        }
+        if (error instanceof NetworkError) {
+            return this.clientActivity_.getContextForClient().getResources().getString(R.string.network_error);
+        }
+        if (error instanceof NoConnectionError) {
+            return this.clientActivity_.getContextForClient().getResources().getString(R.string.no_connection_error);
+        }
+        if (error instanceof ParseError) {
+            return this.clientActivity_.getContextForClient().getResources().getString(R.string.parse_error);
+        }
+        if (error instanceof ServerError) {
+            return this.clientActivity_.getContextForClient().getResources().getString(R.string.server_error);
+        }
+
+        return error.getMessage();
+
     }
 
 }

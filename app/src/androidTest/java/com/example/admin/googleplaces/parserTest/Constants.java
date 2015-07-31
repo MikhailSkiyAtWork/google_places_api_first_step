@@ -44,6 +44,8 @@ public class Constants {
     public static final String MUSEUM_TYPE = "museum";
     public static final String POINT_OF_INTEREST_TYPE = "point_of_interest";
     public static final String ESTABLISHMENT = "establishment";
+    public static final double LATITUDE = 47.206579;
+    public static final double LONGITUDE = 38.931234;
     //endregion
 
     //region Fictional response from server for Search Places request

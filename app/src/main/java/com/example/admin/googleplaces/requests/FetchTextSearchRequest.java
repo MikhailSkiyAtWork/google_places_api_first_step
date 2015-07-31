@@ -39,17 +39,19 @@ public class FetchTextSearchRequest extends GeneralRequest {
         String url = null;
         Uri builtUri = null;
         // If user has checked type, so create request with types
-        if (requestParams_.getTypes().size() > 0) {
-            try {
-                builtUri = Uri.parse(BASE_PLACE_SEARCH_URL).buildUpon()
-                        .appendQueryParameter(QUERY_KEY, this.requestParams_.getQuery())
-                        .appendQueryParameter(LOCATION_KEY, this.requestParams_.getPoint())
-                        .appendQueryParameter(TYPES_KEY, URLEncoder.encode(Utily.createRequestFriendlyTypes(requestParams_.getTypes()), "UTF-8"))
-                        .appendQueryParameter(RADIUS_KEY, this.requestParams_.getRadius())
-                        .appendQueryParameter(GOOGLE_PLACES_API_KEY, this.requestParams_.getApiKey())
-                        .build();
-            } catch (UnsupportedEncodingException e) {
-                Log.e("UnsupportedEncoding", e.getMessage());
+        if (requestParams_.getTypes() != null) {
+            if (requestParams_.getTypes().size() > 0) {
+                try {
+                    builtUri = Uri.parse(BASE_PLACE_SEARCH_URL).buildUpon()
+                            .appendQueryParameter(QUERY_KEY, this.requestParams_.getQuery())
+                            .appendQueryParameter(LOCATION_KEY, this.requestParams_.getPoint())
+                            .appendQueryParameter(TYPES_KEY, (Utily.createRequestFriendlyTypes(requestParams_.getTypes())))
+                            .appendQueryParameter(RADIUS_KEY, this.requestParams_.getRadius())
+                            .appendQueryParameter(GOOGLE_PLACES_API_KEY, this.requestParams_.getApiKey())
+                            .build();
+                } catch (Exception e) {
+                    Log.e("UnsupportedEncoding", e.getMessage());
+                }
             }
         } else {
             builtUri = Uri.parse(BASE_PLACE_SEARCH_URL).buildUpon()
