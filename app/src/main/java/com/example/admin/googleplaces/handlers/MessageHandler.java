@@ -23,7 +23,7 @@ public class MessageHandler extends Handler {
     private static final int FIRST_ITEM = 0;
 
     private UIactions activity_;
-    private RequestManager manager;
+    final private RequestManager manager;
     private PreviewData previewData_ = new PreviewData();
     private List<NearbyPlaceDetails> fetchedPlaces_;
 

@@ -1,5 +1,6 @@
 package com.example.admin.googleplaces.managers;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
@@ -39,6 +40,7 @@ import com.example.admin.googleplaces.requests.FetchTextSearchRequest;
 import com.example.admin.googleplaces.requests.GeneralRequest;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,13 +49,15 @@ import java.util.List;
  */
 public class RequestManager {
 
-    private MessageHandler handler_ = new MessageHandler(this);
-    private UIactions clientActivity_;
+    final private MessageHandler handler_ = new MessageHandler(this);
+    final private WeakReference<UIactions> clientActivity_;
+    private Context context_;
+
 
     private static final String LOG_TAG = RequestManager.class.getSimpleName();
 
     public RequestManager(UIactions clienActivity) {
-        this.clientActivity_ = clienActivity;
+        clientActivity_ = new WeakReference<UIactions>(clienActivity);
     }
 
     /**
@@ -130,8 +134,12 @@ public class RequestManager {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             Log.e(LOG_TAG, "Error", error);
-                            Toast.makeText(clientActivity_.getContextForClient(), getUserFriendlyErrorMsg(error),
-                                    Toast.LENGTH_SHORT).show();
+
+                            Context context = clientActivity_.get().getContextForClient();
+                            if (context != null) {
+                                Toast.makeText(clientActivity_.get().getContextForClient(), getUserFriendlyErrorMsg(error),
+                                        Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
 
@@ -173,53 +181,55 @@ public class RequestManager {
     public void postPhotoRequest(Photo photo) {
         ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
-        int width = Utily.getApropriateWidth(this.clientActivity_.getContextForClient(), photo.getWidth());
-        int height = Utily.getApropriateHeight(this.clientActivity_.getContextForClient(), photo.getHeight());
-        final RequestParams requestParams = new RequestParams(width, height, photo.getPhotoReference(), Utily.getApiKey(this.clientActivity_.getContextForClient()));
+        Context context = this.clientActivity_.get().getContextForClient();
+        if (context != null) {
+            int width = Utily.getApropriateWidth(this.clientActivity_.get().getContextForClient(), photo.getWidth());
+            int height = Utily.getApropriateHeight(this.clientActivity_.get().getContextForClient(), photo.getHeight());
+            final RequestParams requestParams = new RequestParams(width, height, photo.getPhotoReference(), Utily.getApiKey(this.clientActivity_.get().getContextForClient()));
 
-        final FetchPhotoRequest photoRequest = new FetchPhotoRequest(requestParams);
-        String url = photoRequest.getUrl();
-        Log.v("URL", url);
-        final ArrayList<Bitmap> photos = new ArrayList<>();
+            final FetchPhotoRequest photoRequest = new FetchPhotoRequest(requestParams);
+            String url = photoRequest.getUrl();
+            Log.v("URL", url);
+            final ArrayList<Bitmap> photos = new ArrayList<>();
 
-        Bitmap photoFromCache = getPhotoFromCache(url);
+            Bitmap photoFromCache = getPhotoFromCache(url);
 
-        if (photoFromCache != null) {
+            if (photoFromCache != null) {
 
-            photos.add(photoFromCache);
-            handler_.sendMessage(handler_.obtainMessage(States.PHOTO_DOWNLOADED, photos));
-        } else {
+                photos.add(photoFromCache);
+                handler_.sendMessage(handler_.obtainMessage(States.PHOTO_DOWNLOADED, photos));
+            } else {
 
-            imageLoader.get(url, new ImageLoader.ImageListener() {
-                @Override
-                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                    if (response.getBitmap() != null) {
-                        photos.add(response.getBitmap());
-                        handler_.sendMessage(handler_.obtainMessage(States.PHOTO_DOWNLOADED, photos));
+                imageLoader.get(url, new ImageLoader.ImageListener() {
+                    @Override
+                    public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                        if (response.getBitmap() != null) {
+                            photos.add(response.getBitmap());
+                            handler_.sendMessage(handler_.obtainMessage(States.PHOTO_DOWNLOADED, photos));
 
+                        }
                     }
-                }
 
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.e(LOG_TAG, "Error", error);
-                    Toast.makeText(clientActivity_.getContextForClient(), getUserFriendlyErrorMsg(error),
-                            Toast.LENGTH_SHORT).show();
-                }
-            });
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(LOG_TAG, "Error", error);
+                        Toast.makeText(clientActivity_.get().getContextForClient(), getUserFriendlyErrorMsg(error),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
 
+            }
         }
-
     }
 
     public void postPhotoPreviewRequest(final PreviewData previewData) {
         ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
-        int previewHeight = (int) this.clientActivity_.getContextForClient().getResources().getDimension(R.dimen.preview_height);
-        int previewWidth = (int) this.clientActivity_.getContextForClient().getResources().getDimension(R.dimen.preview_width);
+        int previewHeight = (int) this.clientActivity_.get().getContextForClient().getResources().getDimension(R.dimen.preview_height);
+        int previewWidth = (int) this.clientActivity_.get().getContextForClient().getResources().getDimension(R.dimen.preview_width);
         String photoRef = previewData.getPhoto().getPhotoReference();
 
-        final RequestParams requestParams = new RequestParams(previewHeight, previewWidth, photoRef, Utily.getApiKey(this.clientActivity_.getContextForClient()));
+        final RequestParams requestParams = new RequestParams(previewHeight, previewWidth, photoRef, Utily.getApiKey(this.clientActivity_.get().getContextForClient()));
 
         final FetchPhotoRequest photoRequest = new FetchPhotoRequest(requestParams);
         String url = photoRequest.getUrl();
@@ -248,7 +258,7 @@ public class RequestManager {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e(LOG_TAG, "Error", error);
-                    Toast.makeText(clientActivity_.getContextForClient(), getUserFriendlyErrorMsg(error),
+                    Toast.makeText(clientActivity_.get().getContextForClient(), getUserFriendlyErrorMsg(error),
                             Toast.LENGTH_SHORT).show();
                 }
             });
@@ -270,35 +280,37 @@ public class RequestManager {
     }
 
     public void updatePreview(PreviewData previewData) {
-        clientActivity_.showPreview(previewData);
+        clientActivity_.get().showPreview(previewData);
     }
 
     public void showWarning() {
-        clientActivity_.showWarning();
+        clientActivity_.get().showWarning();
     }
 
     public String getUserFriendlyErrorMsg(VolleyError error) {
-        if (error instanceof TimeoutError) {
-            return this.clientActivity_.getContextForClient().getResources().getString(R.string.timeout_error);
-        }
-        if (error instanceof AuthFailureError) {
-            return this.clientActivity_.getContextForClient().getResources().getString(R.string.auth_error);
-        }
-        if (error instanceof NetworkError) {
-            return this.clientActivity_.getContextForClient().getResources().getString(R.string.network_error);
-        }
-        if (error instanceof NoConnectionError) {
-            return this.clientActivity_.getContextForClient().getResources().getString(R.string.no_connection_error);
-        }
-        if (error instanceof ParseError) {
-            return this.clientActivity_.getContextForClient().getResources().getString(R.string.parse_error);
-        }
-        if (error instanceof ServerError) {
-            return this.clientActivity_.getContextForClient().getResources().getString(R.string.server_error);
-        }
+        Context context = this.clientActivity_.get().getContextForClient();
+        if (context != null) {
+            if (error instanceof TimeoutError) {
+                return this.clientActivity_.get().getContextForClient().getResources().getString(R.string.timeout_error);
+            }
+            if (error instanceof AuthFailureError) {
+                return this.clientActivity_.get().getContextForClient().getResources().getString(R.string.auth_error);
+            }
+            if (error instanceof NetworkError) {
+                return this.clientActivity_.get().getContextForClient().getResources().getString(R.string.network_error);
+            }
+            if (error instanceof NoConnectionError) {
+                return this.clientActivity_.get().getContextForClient().getResources().getString(R.string.no_connection_error);
+            }
+            if (error instanceof ParseError) {
+                return this.clientActivity_.get().getContextForClient().getResources().getString(R.string.parse_error);
+            }
+            if (error instanceof ServerError) {
+                return this.clientActivity_.get().getContextForClient().getResources().getString(R.string.server_error);
+            }
 
+        }
         return error.getMessage();
-
     }
 
 }
